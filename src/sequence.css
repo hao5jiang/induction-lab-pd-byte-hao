@@ -43,6 +43,7 @@
 }
 
 .sequence-step-controls h1 { font-size: clamp(35px, 3vw, 46px); }
+.sequence-steps.is-returning-from-proof > .sequence-step-controls { padding-top: clamp(160px, 22vh, 260px); }
 .sequence-step-controls header p { font-size: 16px; }
 
 .sequence-move-counter {
@@ -308,3 +309,8 @@
   .reasoning-page .sequence-footer { flex-wrap: wrap; }
   .reasoning-page .sequence-footer .sequence-button { max-width: 100%; white-space: normal; }
 }
+
+.sequence-steps > .sequence-board-area { padding-top: 16px; }
+.sequence-steps .sequence-provisional { margin-bottom: 12px; padding: 12px 18px; }
+.sequence-steps.is-returning-from-proof .sequence-board { margin-top: -32px; }
+.sequence-steps.is-returning-from-proof .sequence-board .tower-shell { margin-bottom: 20px; }

@@ -170,9 +170,10 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
     pauseKey = completed ? 'exploredComplete' : 'exploring'
   }
   const [pauseTitle, pausePrompt] = copy.pause[pauseKey]
+  const CountingContainer = expandOnReturn ? 'section' : 'details'
 
   return (
-    <section className="sequence-screen sequence-steps">
+    <section className={`sequence-screen sequence-steps${expandOnReturn ? ' is-returning-from-proof' : ''}`}>
       <aside className="sequence-step-controls">
         <header><span className="sequence-eyebrow">{copy.eyebrow}</span><h1>{copy.heading}</h1><p>{copy.intro}</p></header>
         <div className="disc-control"><span className="control-label">{t("DISCS")}</span><div className="segmented-control" aria-label={t("Walkthrough disc count")}>{[1, 2, 3, 4].map((value) => <button aria-pressed={count === value} className={count === value ? 'is-active' : ''} key={value} onClick={() => setWalkthrough(newWalkthrough(value))} type="button">{value}</button>)}</div></div>
@@ -187,16 +188,16 @@ export function StepsScreen({ teacherLens, onBack, onNext, onProgress, initialPr
       </aside>
       <div className="sequence-board-area">
         <div className="sequence-provisional"><strong>{copy.provisionalTitle}</strong><p>{copy.provisionalPrefix}<a className="appendix-page-link" href={`${proofUrl.pathname}${proofUrl.search}${proofUrl.hash}`} onClick={openProof}>{copy.provisionalQuestion}</a></p></div>
-        <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{copy.status[deviated ? 'exploring' : playing ? 'playing' : 'paused']}</span><h2>{pauseTitle}</h2><p>{feedback ? t(feedback) : pausePrompt}</p></div>
+        {pauseKey !== 'start' && <div className={`sequence-pause-card${deviated ? ' is-exploring' : ''}`} role="status" aria-live="polite"><span>{copy.status[deviated ? 'exploring' : playing ? 'playing' : 'paused']}</span><h2>{pauseTitle}</h2><p>{feedback ? t(feedback) : pausePrompt}</p></div>}
         <div className="sequence-board"><Tower count={count} pegs={pegs} onMove={manualMove} selectedPeg={selectedPeg} setSelectedPeg={choosePeg} /></div>
         <p className="sequence-counting-cue">{copy.focusCue}</p>
-        <details className="sequence-counting" key={count} open={expandOnReturn}>
-          <summary>{copy.openCount}</summary>
+        <CountingContainer className="sequence-counting" key={count}>
+          {!expandOnReturn && <summary>{copy.openCount}</summary>}
           <DiscCounts count={count} discMoves={discMoves} moves={moves} copy={copy} />
           <span className="sequence-eyebrow">{t("MOVES IN THIS CONSTRUCTION")}</span>
           {count === 1 ? <div className="sequence-sum"><strong>1</strong></div> : <div className="sequence-sum"><span><b className="sequence-single">1</b> + <b className="sequence-pair">2</b>({expandedSum(count - 1)})</span><span className="sequence-equals">=</span><span>{expandedSum(count)}</span></div>}
           <p>{t(count === 1 ? 'The initial case: one disc, one move.' : `One largest-disc move + two transfers of the ${count - 1}-disc tower.`)}</p>
-        </details>
+        </CountingContainer>
         <SequenceFooter onBack={onBack} onNext={onNext} nextLabel={copy.next} />
       </div>
     </section>
