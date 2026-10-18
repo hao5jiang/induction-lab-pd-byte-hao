@@ -23,7 +23,7 @@ const fontUrls = [...css.matchAll(/url\(([^)]+)\)/g)]
 for (const match of fontUrls) {
   const url = match[1].trim().replace(/^['"]|['"]$/g, '')
   if (url.startsWith('data:')) continue
-  const fontPath = path.resolve(path.dirname(cssPath), url)
+  const fontPath = url.startsWith('/') ? resolveAsset(url) : path.resolve(path.dirname(cssPath), url)
   const font = await readFile(fontPath)
   const extension = path.extname(fontPath).slice(1)
   const mime = extension === 'woff2' ? 'font/woff2' : extension === 'woff' ? 'font/woff' : 'font/ttf'
