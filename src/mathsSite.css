@@ -23,7 +23,7 @@
 .mj-equation-art > span:last-child { display:block; font:12px "Segoe UI",sans-serif; margin-top:8px; }
 .mj-home-foot { margin-top:36px; font-size:13px; color:#60716c; }
 .mj-lesson { max-width:1160px; margin:auto; padding:28px 34px 60px; }
-.mj-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:48px; }
+.mj-tabs { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:48px; }
 .mj-tabs button { font:inherit; font-size:13px; color:#47615f; text-align:left; padding:14px 10px; background:transparent; border:0; border-bottom:2px solid #cbd6ce; cursor:pointer; }
 .mj-tabs button[aria-current] { color:#116a64; border-color:#116a64; background:#e5ece3; font-weight:700; }
 .mj-tabs button:disabled { opacity:.42; cursor:default; }
@@ -56,6 +56,11 @@
 .mj-button { display:inline-flex; align-items:center; justify-content:center; padding:12px 18px; background:#116a64; color:white; border:1px solid #116a64; border-radius:4px; font:600 14px/1.5 "Segoe UI",sans-serif; cursor:pointer; min-height:46px; }
 .mj-button.secondary { background:transparent;color:#116a64 }.mj-button:disabled{opacity:.4;cursor:default}.mj-button:hover:not(:disabled){background:#174f49;color:white}
 .mj-reveal { margin:20px 0 0; border-top:1px solid #d5dcd2; padding-top:16px; }.mj-reveal summary{cursor:pointer;font-weight:650;color:#116a64;padding:8px 0}.mj-feedback{padding:14px 18px;background:#e8efe2;border-left:3px solid #68825a;margin-top:20px}
+.mj-answer-feedback { border-left-width:6px; border-radius:4px; }
+.mj-answer-feedback strong { display:block; font-size:18px; line-height:1.4; }
+.mj-answer-feedback p { margin:8px 0 0; }
+.mj-answer-feedback.is-correct { background:#e4f3e6; border-color:#168046; color:#164c2b; }
+.mj-answer-feedback.is-incorrect { background:#fff0ed; border-color:#b9382b; color:#79291f; }
 .mj-options { padding:0;border:0;margin:20px 0; }.mj-options legend{font-size:13px;color:#5b7269;margin-bottom:12px}.mj-options label{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid #cad6cc;margin-bottom:10px;line-height:1.6;cursor:pointer}.mj-options input{margin-top:5px;accent-color:#116a64}
 .mj-footer { display:flex;align-items:center;justify-content:space-between;border-top:1px solid #cbd6ce;margin-top:36px;padding-top:24px;gap:14px;font-size:13px; }
 .mj-site :focus-visible { outline:3px solid #c67b33; outline-offset:4px; }
