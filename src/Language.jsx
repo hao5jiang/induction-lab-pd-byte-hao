@@ -7,7 +7,7 @@ function initialLanguage() {
   if (typeof window === 'undefined') return 'en'
   const specified = new URLSearchParams(window.location.search).get('lang')
   if (specified === 'zh' || specified === 'en') return specified
-  try { return window.localStorage.getItem(storageKey) === 'zh' ? 'zh' : 'en' } catch { return 'en' }
+  return 'en'
 }
 let language = initialLanguage()
 export const getLanguage = () => language
