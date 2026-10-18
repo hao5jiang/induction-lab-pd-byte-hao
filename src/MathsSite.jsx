@@ -58,12 +58,16 @@ function ValueActivity() {
   return <>
     <header className="mj-lesson-title"><span>01 / FROM A SECANT TO A TANGENT</span><h1>Two points. Then a tangent.</h1><p>Explore the slope of a line through two points on a curve.</p></header>
     <aside className="mj-principle"><strong>Differentiation applies to functions.</strong><p><MathFormula tex={"g'(a)"} /> is the tangent slope of the graph of <MathFormula tex="g" /> at <MathFormula tex="x=a" />, when this derivative exists.</p></aside>
-    <div className="mj-two-col">
+    <div className="mj-two-col"><div>
       <section className="mj-panel"><h2>Let <MathFormula tex="g(x)=x^2" />.</h2><Graph kind="square" a={a} h={b-a} />
         <label className="mj-slider">Move the first point: a = {a.toFixed(1)}<input type="range" min="-2" max="2" step=".1" value={a} onChange={e=>setA(Number(e.target.value))} /></label>
         <label className="mj-slider">Move the second point: b = {b.toFixed(2)}<input type="range" min="-2" max="2" step=".02" value={b} onChange={e=>setB(Number(e.target.value))} /></label>
         <p className="mj-legend">Teal: curve and first point. Purple: second point and secant line.</p>
       </section>
+    <section className="mj-panel"><h2>Now compare with the tangent.</h2><p>The separate graph below uses the same first point. Change a above to move this tangent point too.</p>
+      <Graph kind="square" a={a} tangent /><p className="mj-legend">Teal: curve. Orange: tangent at the selected point.</p><div className="mj-formula"><MathFormula display tex={`g'(${a.toFixed(1)})=${slopeAt('square',a).toFixed(2)}`} /></div>
+    </section>
+      </div>
       <section className="mj-panel"><h2>Bring the points closer.</h2><p>The points have x-coordinates <MathFormula tex="a" /> and <MathFormula tex="b" />. Keep the first point still and bring the second towards it, from either side.</p>
         <div className="mj-formula"><MathFormula display tex={String.raw`\frac{g(b)-g(a)}{b-a}`} /></div>
         <p>{secant===null ? 'At b = a the points coincide, so the secant quotient is undefined. Let b approach a while keeping the points distinct.' : <>Current secant slope: <strong>{secant.toFixed(2)}</strong></>}</p>
@@ -75,9 +79,7 @@ function ValueActivity() {
         </div>
       </section>
     </div>
-    <section className="mj-panel"><h2>Now compare with the tangent.</h2><p>The separate graph below uses the same first point. Change a above to move this tangent point too.</p>
-      <Graph kind="square" a={a} tangent /><p className="mj-legend">Teal: curve. Orange: tangent at the selected point.</p><div className="mj-formula"><MathFormula display tex={`g'(${a.toFixed(1)})=${slopeAt('square',a).toFixed(2)}`} /></div>
-    </section>
+
     <section className="mj-panel"><h2>What does <MathFormula tex={"g'(2)"} /> refer to?</h2><Note id="value-slope">Find <MathFormula tex={"g'(2)"} />. Explain why this is the derivative of g at 2, rather than a derivative of the number 2.</Note><Reveal><p><MathText>g′(x) = 2x, so g′(2) = 4. This is the tangent slope of y = x² at x = 2.</MathText></p><p>The function and the input together identify the tangent slope. Next, compare this with a constant function.</p></Reveal></section>
   </>
 }
