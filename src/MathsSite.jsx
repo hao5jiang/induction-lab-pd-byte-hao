@@ -68,7 +68,11 @@ function ValueActivity() {
         <div className="mj-formula"><MathFormula display tex={String.raw`\frac{g(b)-g(a)}{b-a}`} /></div>
         <p>{secant===null ? 'At b = a the points coincide, so the secant quotient is undefined. Let b approach a while keeping the points distinct.' : <>Current secant slope: <strong>{secant.toFixed(2)}</strong></>}</p>
         <Note id="square-secant">What slope does the secant seem to approach? How does your answer change when you move the first point?</Note>
-        <div className="mj-formula"><MathFormula display tex={String.raw`g'(a)=\lim_{b\to a}\frac{g(b)-g(a)}{b-a}`} /></div>
+        <div className="mj-formula">
+          <MathFormula display tex={String.raw`g'(a)=\lim_{h\to0}\frac{g(a+h)-g(a)}{h}`} />
+          <MathFormula display tex={String.raw`h=b-a`} />
+          <MathFormula display tex={String.raw`g'(a)=\lim_{b\to a}\frac{g(b)-g(a)}{b-a}`} />
+        </div>
       </section>
     </div>
     <section className="mj-panel"><h2>Now compare with the tangent.</h2><p>The separate graph below uses the same first point. Change a above to move this tangent point too.</p>
