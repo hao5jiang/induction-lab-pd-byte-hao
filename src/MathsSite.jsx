@@ -48,32 +48,31 @@ function ConstantActivity() {
     <header className="mj-lesson-title"><span>02 / THE CONSTANT FUNCTION</span><h1><MathText>What does (2)′ mean?</MathText></h1><p><MathText>A number, a function, and a value of a derivative are different things.</MathText></p></header>
     <aside className="mj-principle"><strong>Differentiation applies to functions.</strong><p><MathText>If f is differentiable at a, f′(a) is the slope of the tangent to y = f(x) at x = a. The bare number 2 does not specify a function. In (2)′, the expression 2 stands for the constant function f(x) = 2, differentiated with respect to x.</MathText></p></aside>
     <div className="mj-two-col"><section className="mj-panel"><span className="mj-kicker">ONE FUNCTION · MANY POINTS</span><h2><MathText>Let f(x) = 2.</MathText></h2><Graph kind="constant" a={a} tangent={shown} /><label className="mj-slider">Move the point: a = {a.toFixed(1)}<input type="range" min="-2" max="2" step=".1" value={a} onChange={e=>setA(Number(e.target.value))} /></label><p className="mj-legend">Teal: function{shown && ' · Orange: tangent'}</p></section>
-    <section className="mj-panel"><h2>Height or slope?</h2><p>The function value stays at 2. What does that tell you about the tangent slope?</p><Note id="constant-slope">Explain the slope of this horizontal line.</Note><button className="mj-button" onClick={()=>setShown(!shown)}>{shown ? 'Hide the tangent and calculation' : 'Check the tangent and calculation'}</button>{shown && <div className="mj-feedback"><p><MathText>The vertical change is 2 − 2 = 0 for every nonzero h.</MathText></p><div className="mj-formula"><MathFormula display tex={String.raw`f'(a)=\lim_{h\to0}\frac{2-2}{h}=0`} /></div><p><MathText>The tangent is horizontal, so f′(a) = 0 at every point. Its height is 2; its slope is 0.</MathText></p></div>}</section></div>
+    <section className="mj-panel"><h2>Height or slope?</h2><p>The function value stays at 2. What does that tell you about the tangent slope?</p><Note id="constant-slope">Explain the slope of this horizontal line.</Note><button className="mj-button" onClick={()=>setShown(!shown)}>{shown ? 'Hide the tangent and calculation' : 'Check the tangent and calculation'}</button>{shown && <div className="mj-feedback"><p><MathText>The vertical change is 2 − 2 = 0 whenever b differs from a.</MathText></p><div className="mj-formula"><MathFormula display tex={String.raw`f'(a)=\lim_{b\to a}\frac{2-2}{b-a}=0`} /></div><p><MathText>The tangent is horizontal, so f′(a) = 0 at every point. Its height is 2; its slope is 0.</MathText></p></div>}</section></div>
     <section className="mj-panel"><h2><MathText>Say precisely what (2)′ = 0 means.</MathText></h2><p><MathText>Which statement names the function and explains the result?</MathText></p><fieldset className="mj-options"><legend>Choose a statement, then confirm.</legend>{[['number','The number 2 has a tangent with slope 0.'],['function','The constant function f(x) = 2 has a horizontal tangent at every point, so its derivative is 0.'],['height','The derivative is 2 because the graph is at height 2.']].map(([value,label])=><label key={value}><input type="radio" name="constant-meaning" checked={choice===value} onChange={()=>{setChoice(value);setSubmitted(false)}} /><span><MathText>{label}</MathText></span></label>)}</fieldset><button className="mj-button" disabled={!choice} onClick={()=>setSubmitted(true)}>Confirm answer</button>{submitted && <p className="mj-feedback" role="status"><MathText>{choice==='function' ? 'Yes. You have named the function and distinguished its height from its tangent slope.' : choice==='number' ? 'A tangent belongs to a graph. Which function gives the horizontal line in this activity?' : 'Height and slope are different. How much does the function value change when x changes?'}</MathText></p>}</section>
   </>
 }
 function ValueActivity() {
-  const [a,setA]=useState(1),[h,setH]=useState(1),[shown,setShown]=useState(false)
-  const secant=secantSlope('square',a,h)
+  const [a,setA]=useState(1),[b,setB]=useState(2)
+  const secant=secantSlope('square',a,b-a)
   return <>
     <header className="mj-lesson-title"><span>01 / FROM A SECANT TO A TANGENT</span><h1>Two points. Then a tangent.</h1><p>Explore the slope of a line through two points on a curve.</p></header>
     <aside className="mj-principle"><strong>Differentiation applies to functions.</strong><p><MathFormula tex={"g'(a)"} /> is the tangent slope of the graph of <MathFormula tex="g" /> at <MathFormula tex="x=a" />, when this derivative exists.</p></aside>
     <div className="mj-two-col">
-      <section className="mj-panel"><h2>Let <MathFormula tex="g(x)=x^2" />.</h2><Graph kind="square" a={a} h={h} />
+      <section className="mj-panel"><h2>Let <MathFormula tex="g(x)=x^2" />.</h2><Graph kind="square" a={a} h={b-a} />
         <label className="mj-slider">Move the first point: a = {a.toFixed(1)}<input type="range" min="-2" max="2" step=".1" value={a} onChange={e=>setA(Number(e.target.value))} /></label>
-        <label className="mj-slider">Move the second point: h = {h.toFixed(2)}<input type="range" min="-1.5" max="1.5" step=".02" value={h} onChange={e=>setH(Number(e.target.value))} /></label>
+        <label className="mj-slider">Move the second point: b = {b.toFixed(2)}<input type="range" min="-2" max="2" step=".02" value={b} onChange={e=>setB(Number(e.target.value))} /></label>
         <p className="mj-legend">Teal: curve and first point. Purple: second point and secant line.</p>
       </section>
-      <section className="mj-panel"><h2>Bring the points closer.</h2><p>The points have x-coordinates <MathFormula tex="a" /> and <MathFormula tex="a+h" />. Keep the first point still and bring the second towards it, from either side.</p>
-        <div className="mj-formula"><MathFormula display tex={String.raw`\frac{g(a+h)-g(a)}{h}`} /></div>
-        <p>{secant===null ? 'At h = 0 the points coincide, so the secant quotient is undefined. Approach zero without setting h equal to zero.' : <>Current secant slope: <strong>{secant.toFixed(2)}</strong></>}</p>
+      <section className="mj-panel"><h2>Bring the points closer.</h2><p>The points have x-coordinates <MathFormula tex="a" /> and <MathFormula tex="b" />. Keep the first point still and bring the second towards it, from either side.</p>
+        <div className="mj-formula"><MathFormula display tex={String.raw`\frac{g(b)-g(a)}{b-a}`} /></div>
+        <p>{secant===null ? 'At b = a the points coincide, so the secant quotient is undefined. Let b approach a while keeping the points distinct.' : <>Current secant slope: <strong>{secant.toFixed(2)}</strong></>}</p>
         <Note id="square-secant">What slope does the secant seem to approach? How does your answer change when you move the first point?</Note>
-        <div className="mj-formula"><MathFormula display tex={String.raw`g'(a)=\lim_{h\to0}\frac{g(a+h)-g(a)}{h}`} /></div>
+        <div className="mj-formula"><MathFormula display tex={String.raw`g'(a)=\lim_{b\to a}\frac{g(b)-g(a)}{b-a}`} /></div>
       </section>
     </div>
     <section className="mj-panel"><h2>Now compare with the tangent.</h2><p>The separate graph below uses the same first point. Change a above to move this tangent point too.</p>
-      <button className="mj-button" onClick={()=>setShown(!shown)}>{shown ? 'Hide tangent graph' : 'Show tangent'}</button>
-      {shown && <><Graph kind="square" a={a} tangent /><p className="mj-legend">Teal: curve. Orange: tangent at the selected point.</p><div className="mj-formula"><MathFormula display tex={`g'(${a.toFixed(1)})=${slopeAt('square',a).toFixed(2)}`} /></div></>}
+      <Graph kind="square" a={a} tangent /><p className="mj-legend">Teal: curve. Orange: tangent at the selected point.</p><div className="mj-formula"><MathFormula display tex={`g'(${a.toFixed(1)})=${slopeAt('square',a).toFixed(2)}`} /></div>
     </section>
     <section className="mj-panel"><h2>What does <MathFormula tex={"g'(2)"} /> refer to?</h2><Note id="value-slope">Find <MathFormula tex={"g'(2)"} />. Explain why this is the derivative of g at 2, rather than a derivative of the number 2.</Note><Reveal><p><MathText>g′(x) = 2x, so g′(2) = 4. This is the tangent slope of y = x² at x = 2.</MathText></p><p>The function and the input together identify the tangent slope. Next, compare this with a constant function.</p></Reveal></section>
   </>
