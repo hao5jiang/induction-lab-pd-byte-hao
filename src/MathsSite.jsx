@@ -55,22 +55,39 @@ function ConstantActivity() {
 function ValueActivity() {
   const [a,setA]=useState(1),[b,setB]=useState(2)
   const secant=secantSlope('square',a,b-a)
+  const tangent=slopeAt('square',a)
+  const slopeX = slope => 30 + (slope+4)*40
   return <>
     <header className="mj-lesson-title"><span>01 / FROM A SECANT TO A TANGENT</span><h1>Two points. Then a tangent.</h1><p>Explore the slope of a line through two points on a curve.</p></header>
     <aside className="mj-principle"><strong>Differentiation applies to functions.</strong><p><MathFormula tex={"g'(a)"} /> is the tangent slope of the graph of <MathFormula tex="g" /> at <MathFormula tex="x=a" />, when this derivative exists.</p></aside>
     <div className="mj-two-col"><div>
-      <section className="mj-panel"><h2>Let <MathFormula tex="g(x)=x^2" />.</h2><Graph kind="square" a={a} h={b-a} />
+      <section className="mj-panel"><h2>Let <MathFormula tex="g(x)=x^2" />.</h2><div className="mj-slope-badge secant"><span>SECANT SLOPE</span><strong>{secant===null ? 'Undefined' : secant.toFixed(2)}</strong></div><Graph kind="square" a={a} h={b-a} />
         <label className="mj-slider">Move the first point: a = {a.toFixed(1)}<input type="range" min="-2" max="2" step=".1" value={a} onChange={e=>setA(Number(e.target.value))} /></label>
         <label className="mj-slider">Move the second point: b = {b.toFixed(2)}<input type="range" min="-2" max="2" step=".02" value={b} onChange={e=>setB(Number(e.target.value))} /></label>
         <p className="mj-legend">Teal: curve and first point. Purple: second point and secant line.</p>
       </section>
     <section className="mj-panel"><h2>Now compare with the tangent.</h2><p>The separate graph below uses the same first point. Change a above to move this tangent point too.</p>
-      <Graph kind="square" a={a} tangent /><p className="mj-legend">Teal: curve. Orange: tangent at the selected point.</p><div className="mj-formula"><MathFormula display tex={`g'(${a.toFixed(1)})=${slopeAt('square',a).toFixed(2)}`} /></div>
+      <div className="mj-slope-badge tangent"><span>TANGENT SLOPE</span><strong>{tangent.toFixed(2)}</strong></div><Graph kind="square" a={a} tangent /><p className="mj-legend">Teal: curve. Orange: tangent at the selected point.</p><div className="mj-formula"><MathFormula display tex={`g'(${a.toFixed(1)})=${tangent.toFixed(2)}`} /></div>
     </section>
       </div>
       <section className="mj-panel"><h2>Bring the points closer.</h2><p>The points have x-coordinates <MathFormula tex="a" /> and <MathFormula tex="b" />. Keep the first point still and bring the second towards it, from either side.</p>
+        <section className="mj-slope-comparison" aria-label="Live comparison of secant and tangent slopes">
+          <div className="mj-slope-pair">
+            <div className="mj-slope-badge secant"><span>● SECANT</span><strong>{secant===null ? 'Undefined' : secant.toFixed(2)}</strong><MathFormula tex={String.raw`\frac{g(b)-g(a)}{b-a}`} /></div>
+            <div className="mj-slope-badge tangent"><span>■ TANGENT</span><strong>{tangent.toFixed(2)}</strong><MathFormula tex={String.raw`g'(a)`} /></div>
+          </div>
+          <svg className="mj-slope-scale" viewBox="0 0 380 90" role="img" aria-label={`Shared slope scale: secant ${secant===null ? 'undefined' : secant.toFixed(2)}, tangent ${tangent.toFixed(2)}`}>
+            <line x1="30" y1="42" x2="350" y2="42" stroke="#9caaa0" strokeWidth="2" />
+            {[-4,-2,0,2,4].map(value=><g key={value}><line x1={slopeX(value)} y1="36" x2={slopeX(value)} y2="48" stroke="#9caaa0" /><text x={slopeX(value)} y="70" textAnchor="middle">{value}</text></g>)}
+            {secant!==null && <line x1={slopeX(secant)} y1="42" x2={slopeX(tangent)} y2="42" stroke="#82718f" strokeWidth="5" opacity=".35" />}
+            <rect x={slopeX(tangent)-6} y="36" width="12" height="12" fill="#b85b18" />
+            {secant!==null && <g><line x1={slopeX(secant)} y1="24" x2={slopeX(secant)} y2="42" stroke="#7545a1" strokeWidth="2" /><circle cx={slopeX(secant)} cy="21" r="6" fill="#7545a1" /></g>}
+          </svg>
+          <p className="mj-slope-gap">{secant===null ? 'The tangent still exists here. The secant needs two distinct points.' : <>Difference in slopes <strong>{Math.abs(secant-tangent).toFixed(2)}</strong></>}</p>
+          <p>Keep a still and move b towards a. Watch the purple marker approach the orange marker on the same slope scale.</p>
+        </section>
         <div className="mj-formula"><MathFormula display tex={String.raw`\frac{g(b)-g(a)}{b-a}`} /></div>
-        <p>{secant===null ? 'At b = a the points coincide, so the secant quotient is undefined. Let b approach a while keeping the points distinct.' : <>Current secant slope: <strong>{secant.toFixed(2)}</strong></>}</p>
+        {secant===null && <p>At b = a the points coincide, so the secant quotient is undefined. Let b approach a while keeping the points distinct.</p>}
         <Note id="square-secant">What slope does the secant seem to approach? How does your answer change when you move the first point?</Note>
         <div className="mj-formula">
           <MathFormula display tex={String.raw`g'(a)=\lim_{h\to0}\frac{g(a+h)-g(a)}{h}`} />
