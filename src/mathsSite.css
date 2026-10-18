@@ -20,7 +20,7 @@
 .mj-disc-art i { height:15px; width:65px; background:#145e59; border-radius:100%; }
 .mj-disc-art i:nth-child(2) {width:100px;background:#2b8273}.mj-disc-art i:nth-child(3) {width:140px;background:#8fae7d}.mj-disc-art i:nth-child(4) {width:180px;background:#ca9d55}
 .mj-equation-art { font:italic 64px Georgia,serif; text-align:center; height:105px; margin-top:24px; color:#855b36; }
-.mj-equation-art span { display:block; font:12px "Segoe UI",sans-serif; margin-top:8px; }
+.mj-equation-art > span:last-child { display:block; font:12px "Segoe UI",sans-serif; margin-top:8px; }
 .mj-home-foot { margin-top:36px; font-size:13px; color:#60716c; }
 .mj-lesson { max-width:1160px; margin:auto; padding:28px 34px 60px; }
 .mj-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:48px; }
@@ -42,6 +42,13 @@
 .mj-slider { display:block; font-size:14px; font-weight:600; margin:18px 0; }.mj-slider input { display:block; width:100%; margin-top:14px; accent-color:#116a64; }
 .mj-legend { font-size:12px; color:#58726b; }
 .mj-formula { background:#eef1e8; padding:16px; font:21px/1.8 Georgia,serif; overflow-wrap:anywhere; margin:18px 0; color:#174f49; }
+.mj-typeset-inline { display:inline; }
+.mj-typeset-display { overflow-x:auto; overflow-y:hidden; max-width:100%; padding:4px 0; }
+.mj-typeset-display .katex-display { margin:.5em 0; }
+.mj-site .katex { font-size:1.12em; }
+.mj-formula .katex { font-size:1.05em; }
+.mj-equation-art .katex { font-size:1em; }
+@media(max-width:480px) { .mj-formula { font-size:18px; padding:12px; } }
 .mj-note { display:block; font-size:16px; line-height:1.7; margin:20px 0; }
 .mj-note textarea { width:100%; resize:vertical; font:16px/1.6 "Segoe UI",sans-serif; padding:12px; margin-top:10px; color:#182d32; background:#fff; border:1px solid #a6b9ac; border-radius:4px; }
 .mj-note small { display:block; color:#65796d; font-size:11px; margin-top:5px; }

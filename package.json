@@ -11,6 +11,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",
     "@vitejs/plugin-react": "latest",
+    "katex": "0.19.0",
     "react": "latest",
     "react-dom": "latest",
     "vite": "latest"
