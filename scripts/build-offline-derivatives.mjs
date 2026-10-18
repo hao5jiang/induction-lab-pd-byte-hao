@@ -10,7 +10,11 @@ const scriptTag = html.match(/<script type="module"[^>]*src="([^"]+)"[^>]*><\/sc
 const styleTag = html.match(/<link rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/)
 if (!scriptTag || !styleTag) throw new Error('Could not find the built script and stylesheet.')
 
-const resolveAsset = relative => path.resolve(dist, relative.replace(/^\.\//, ''))
+const resolveAsset = url => {
+  const assetPath = url.match(/(?:^|\/)assets\/[^?#]+$/)?.[0]
+  if (!assetPath) throw new Error(`Unexpected build asset: ${url}`)
+  return path.join(dist, assetPath.replace(/^\//, ''))
+}
 const script = await readFile(resolveAsset(scriptTag[1]), 'utf8')
 const cssPath = resolveAsset(styleTag[1])
 let css = await readFile(cssPath, 'utf8')
