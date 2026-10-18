@@ -1,12 +1,24 @@
+# Mr Jiang Maths
+
+The default home page now offers two topics: mathematical induction and an English derivatives exploration adapted from `Untitled-1.tex` in the EDUC7605 lesson plan.
+
+- `?topic=induction` opens the existing induction lab.
+- `?topic=derivatives` opens four activities: the meaning of `(2)′`, function values versus tangent slopes, examples of `f′ = f`, and the importance of the domain.
+- Existing classroom, teacher and stage links still open the induction experience.
+- Written responses remain in the current browser tab's session storage; the derivatives activity does not send responses to the classroom database.
+- Explanations are revealed on request. The final activity proves the exponential form on an open interval and contrasts it with a disconnected domain.
+
+Run `node --test src/derivativeMath.test.js` to check the plotted functions and slopes. The existing induction documentation follows.
+
 # Induction Lab
 
 Induction Lab supports a 15-minute EDUC7604 PD Byte about teaching mathematical induction. Teachers experience a Tower of Hanoi activity, then examine how a timed pause and a focused question can reveal students' reasoning.
 
 ## Open the activity
 
-- [Standalone activity with Teacher lens](https://yurifrusin.github.io/induction-lab-pd-byte-hao/)
-- [Classroom entrance](https://yurifrusin.github.io/induction-lab-pd-byte-hao/?classroom=1)
-- [Teacher dashboard](https://yurifrusin.github.io/induction-lab-pd-byte-hao/?teacher=1)
+- [Standalone activity with Teacher lens](https://hao5jiang.github.io/induction-lab-pd-byte-hao/)
+- [Classroom entrance](https://hao5jiang.github.io/induction-lab-pd-byte-hao/?classroom=1)
+- [Teacher dashboard](https://hao5jiang.github.io/induction-lab-pd-byte-hao/?teacher=1)
 
 Classroom mode uses Supabase for pseudonymous progress and class approvals. Apply the database updates described in [CLASSROOM_SETUP.md](CLASSROOM_SETUP.md) before using the guided classroom sequence. Publishing the website does not apply those updates.
 

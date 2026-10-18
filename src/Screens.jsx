@@ -41,7 +41,7 @@ export function AppHeader({
           <i />
           <i />
         </span>
-        <span>{t("Induction Lab")}</span>
+        <span>Mr Jiang Maths</span>
       </button>
 
       <nav ref={navRef} className="stage-nav" style={{ '--stage-count': STAGES.length }} aria-label={t("Activity sequence")}>

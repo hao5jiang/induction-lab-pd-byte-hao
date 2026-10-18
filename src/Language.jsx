@@ -29,7 +29,7 @@ export const t = translate
 function updateDocument() {
   if (typeof document === 'undefined') return
   document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en'
-  document.title = language === 'zh' ? '数学归纳实验室' : 'Induction Lab'
+  document.title = language === 'zh' ? 'Mr Jiang Maths · 数学归纳法' : 'Mr Jiang Maths · Mathematical induction'
 }
 export function setLanguage(next, updateUrl = true) {
   language = next === 'zh' ? 'zh' : 'en'
