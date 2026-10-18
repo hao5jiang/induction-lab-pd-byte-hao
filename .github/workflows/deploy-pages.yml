@@ -37,6 +37,9 @@ jobs:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
+      - name: Package the standalone derivatives lesson
+        run: pnpm offline:build
+
       - name: Check out the five-disc preview
         uses: actions/checkout@v7
         with:
