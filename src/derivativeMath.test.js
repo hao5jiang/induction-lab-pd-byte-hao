@@ -21,8 +21,9 @@ test('quadratic tangent slope and exponential family including zero', () => {
     assert.equal(valueAt('exp', x, c), slopeAt('exp', x, c))
   }
 })
-test('disconnected example excludes zero and has distinct component constants', () => {
-  assert.equal(componentFunction(0), null)
+test('disconnected example still satisfies the given value at zero', () => {
+  assert.equal(componentFunction(1), null)
+  assert.equal(componentFunction(0), 1)
   assert.equal(componentFunction(-1) / Math.exp(-1), 1)
-  assert.equal(componentFunction(1) / Math.exp(1), 2)
+  assert.equal(componentFunction(2) / Math.exp(2), 2)
 })

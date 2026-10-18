@@ -8,5 +8,5 @@ export function secantSlope(kind, x, h, c = 2) {
   return h === 0 ? null : (valueAt(kind, x + h, c) - valueAt(kind, x, c)) / h
 }
 export function componentFunction(x) {
-  return x === 0 ? null : (x < 0 ? 1 : 2) * Math.exp(x)
+  return x === 1 ? null : (x < 1 ? 1 : 2) * Math.exp(x)
 }
