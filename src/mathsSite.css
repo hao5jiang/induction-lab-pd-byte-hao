@@ -26,7 +26,7 @@
 .mj-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:48px; }
 .mj-tabs button { font:inherit; font-size:13px; color:#47615f; text-align:left; padding:14px 10px; background:transparent; border:0; border-bottom:2px solid #cbd6ce; cursor:pointer; }
 .mj-tabs button[aria-current] { color:#116a64; border-color:#116a64; background:#e5ece3; font-weight:700; }
-.mj-tabs span { display:block; font-size:11px; margin-bottom:6px; }
+.mj-tabs button > span:first-child { display:block; font-size:11px; margin-bottom:6px; }
 .mj-lesson-title { margin-bottom:30px; }
 .mj-lesson-title h1 { font:clamp(32px,5vw,54px)/1.15 Georgia,serif; margin:18px 0; letter-spacing:-1px; }
 .mj-lesson p { line-height:1.8; }
