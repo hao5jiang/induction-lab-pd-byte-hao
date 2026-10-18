@@ -23,7 +23,7 @@
 .mj-equation-art > span:last-child { display:block; font:12px "Segoe UI",sans-serif; margin-top:8px; }
 .mj-home-foot { margin-top:36px; font-size:13px; color:#60716c; }
 .mj-lesson { max-width:1160px; margin:auto; padding:28px 34px 60px; }
-.mj-tabs { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:48px; }
+.mj-tabs { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:48px; }
 .mj-tabs button { font:inherit; font-size:13px; color:#47615f; text-align:left; padding:14px 10px; background:transparent; border:0; border-bottom:2px solid #cbd6ce; cursor:pointer; }
 .mj-tabs button[aria-current] { color:#116a64; border-color:#116a64; background:#e5ece3; font-weight:700; }
 .mj-tabs button:disabled { opacity:.42; cursor:default; }
