@@ -10,7 +10,6 @@
     "offline:build": "node scripts/build-offline-derivatives.mjs"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.112.4",
     "@vitejs/plugin-react": "latest",
     "katex": "0.19.0",
     "react": "latest",

@@ -33,9 +33,6 @@ jobs:
 
       - name: Build website
         run: pnpm build
-        env:
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
       - name: Package the standalone derivatives lesson
         run: pnpm offline:build
@@ -47,10 +44,9 @@ jobs:
           path: .backup-version
 
       - name: Build the backup version
-        run: pnpm exec vite build .backup-version --base=/induction-lab-pd-byte-hao/backup/ --outDir=../dist/backup --emptyOutDir
-        env:
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          node scripts/standalone-preview.mjs .backup-version
+          pnpm exec vite build .backup-version --base=/induction-lab-pd-byte-hao/backup/ --outDir=../dist/backup --emptyOutDir
 
       - name: Check out the five-disc preview
         uses: actions/checkout@v7
@@ -59,10 +55,9 @@ jobs:
           path: .preview-five-discs
 
       - name: Build the five-disc preview
-        run: pnpm exec vite build .preview-five-discs --base=/induction-lab-pd-byte-hao/preview-five-discs/ --outDir=../dist/preview-five-discs --emptyOutDir
-        env:
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          node scripts/standalone-preview.mjs .preview-five-discs
+          pnpm exec vite build .preview-five-discs --base=/induction-lab-pd-byte-hao/preview-five-discs/ --outDir=../dist/preview-five-discs --emptyOutDir
 
       - name: Check out the four-disc preview
         uses: actions/checkout@v7
@@ -71,10 +66,9 @@ jobs:
           path: .preview-four-discs
 
       - name: Build the four-disc preview
-        run: pnpm exec vite build .preview-four-discs --base=/induction-lab-pd-byte-hao/preview-four-discs/ --outDir=../dist/preview-four-discs --emptyOutDir
-        env:
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          node scripts/standalone-preview.mjs .preview-four-discs
+          pnpm exec vite build .preview-four-discs --base=/induction-lab-pd-byte-hao/preview-four-discs/ --outDir=../dist/preview-four-discs --emptyOutDir
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
