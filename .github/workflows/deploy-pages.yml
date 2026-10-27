@@ -40,6 +40,18 @@ jobs:
       - name: Package the standalone derivatives lesson
         run: pnpm offline:build
 
+      - name: Check out the backup version
+        uses: actions/checkout@v7
+        with:
+          ref: backup
+          path: .backup-version
+
+      - name: Build the backup version
+        run: pnpm exec vite build .backup-version --base=/induction-lab-pd-byte-hao/backup/ --outDir=../dist/backup --emptyOutDir
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
       - name: Check out the five-disc preview
         uses: actions/checkout@v7
         with:
