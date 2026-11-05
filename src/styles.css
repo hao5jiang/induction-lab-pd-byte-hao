@@ -3215,3 +3215,14 @@ html:lang(zh-CN) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK
   color: #f6b84b;
   font-weight: 700;
 }
+.proof-term { white-space: nowrap; }
+.proof-count-formula {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35em;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.1em;
+  font-weight: 700;
+}
+.proof-count-formula span { white-space: nowrap; }
