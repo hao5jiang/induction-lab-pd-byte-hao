@@ -1,0 +1,11 @@
+name = "induction-classroom"
+main = "src.js"
+compatibility_date = "2026-10-01"
+
+[[durable_objects.bindings]]
+name = "CLASSROOMS"
+class_name = "Classroom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Classroom"]

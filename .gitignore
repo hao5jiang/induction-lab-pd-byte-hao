@@ -2,6 +2,8 @@ node_modules/
 dist/
 offline/derivatives-student.html
 .vite/
+.wrangler/
+classroom-worker/build-check/
 *.log
 .DS_Store
 .env
