@@ -3,7 +3,8 @@
 Interactive lessons on mathematical induction and derivatives run in the browser. The induction activity includes a teacher lens for presentation. Classroom tracking, teacher accounts, and class approvals are no longer available.
 
 - [Main site](https://hao5jiang.github.io/induction-lab-pd-byte-hao/)
-- [Induction activity](https://hao5jiang.github.io/induction-lab-pd-byte-hao/?topic=induction)
+- [Induction activity (Hanoi)](https://hao5jiang.github.io/induction-lab-pd-byte-hao/?topic=induction)
+- [Tromino tiling activity (Deficient board)](https://hao5jiang.github.io/induction-lab-pd-byte-hao/?topic=tromino)
 - [Derivatives activity](https://hao5jiang.github.io/induction-lab-pd-byte-hao/?topic=derivatives)
 - [Earlier version](https://hao5jiang.github.io/induction-lab-pd-byte-hao/backup/)
 

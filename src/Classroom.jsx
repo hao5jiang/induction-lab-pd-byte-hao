@@ -15,7 +15,7 @@ async function call(path, { token, body } = {}) {
   return result
 }
 
-function StudentClass({ session, onLeave }) {
+export function StudentClass({ session, onLeave }) {
   const [initial, setInitial] = useState(null)
   const [state, setState] = useState(null)
   const [status, setStatus] = useState('loading')
@@ -49,13 +49,78 @@ function StudentClass({ session, onLeave }) {
     const timer = setInterval(() => { void refresh(); void flush() }, 5000)
     return () => { mounted.current = false; clearInterval(timer) }
   }, [refresh, flush])
-  if (!initial) return <main className="mj-panel"><p>{status === 'error' ? 'Could not connect to the class.' : 'Opening the class…'}</p><button onClick={refresh}>Retry</button> <button onClick={onLeave}>Leave</button></main>
+  if (!initial) return <main className="mj-panel" style={{ maxWidth: '600px', margin: '40px auto' }}><p>{status === 'error' ? 'Could not connect to the class.' : 'Opening the class…'}</p><button className="mj-button" onClick={refresh}>Retry</button> <button className="mj-button secondary" onClick={onLeave}>Leave</button></main>
   return <App classroom={{ code: session.code, displayName: initial.name, syncState: status === 'error' ? 'error' : sync, gateStatus: status, workflowVersion: 2, releases: { shortest: !!state?.shortest, steps: !!state?.steps }, initialProgress: initial, initialProgressKey: session.participant }} onLeaveClass={onLeave} onProgress={onProgress} />
+}
+
+export function StudentJoinView({ defaultCode = '', onJoined = null }) {
+  const [code, setCode] = useState(defaultCode.toUpperCase())
+  const [name, setName] = useState('')
+  const [error, setError] = useState('')
+  const [student, setStudent] = useState(() => {
+    const saved = read(studentKey)
+    return saved && (!defaultCode || saved.code === defaultCode.toUpperCase()) ? saved : null
+  })
+
+  async function join(event) {
+    event.preventDefault()
+    try {
+      const cleanCode = code.trim().toUpperCase()
+      const result = await call(`/class/${cleanCode}/join`, { body: { name: name.trim() } })
+      const value = { code: cleanCode, participant: result.participant }
+      save(studentKey, value)
+      setStudent(value)
+      setError('')
+      if (onJoined) onJoined(value)
+    } catch (e) {
+      setError(e.message)
+    }
+  }
+
+  if (student) {
+    return <StudentClass session={student} onLeave={() => { remove(studentKey); setStudent(null) }} />
+  }
+
+  return (
+    <div className="classroom-welcome" style={{ maxWidth: '480px', margin: '40px auto', background: '#fffdf7', padding: '32px', borderRadius: '8px', border: '1px solid #d5dcd2', boxShadow: '0 8px 24px rgba(0,0,0,0.06)' }}>
+      <h1 style={{ fontSize: '28px', margin: '0 0 10px', color: '#182d32' }}>加入课堂 · Join Class</h1>
+      <p style={{ color: '#536868', fontSize: '15px', lineHeight: 1.6 }}>输入教师提供的 6 位课堂码及您的昵称，即可同步参与实时课堂练习。</p>
+      {error && <p className="classroom-error" role="alert" style={{ color: '#c0392b', background: '#fdf2f0', padding: '10px', borderRadius: '4px', margin: '12px 0' }}>{error}</p>}
+      <form onSubmit={join} style={{ display: 'grid', gap: '16px', marginTop: '20px' }}>
+        <label style={{ display: 'grid', gap: '6px', fontWeight: 600, fontSize: '14px', color: '#182d32' }}>
+          课堂码 (Class code)
+          <input
+            value={code}
+            maxLength={6}
+            onChange={e => setCode(e.target.value.toUpperCase())}
+            placeholder="6-digit code (e.g. AB12CD)"
+            style={{ padding: '10px 12px', fontSize: '16px', border: '1px solid #a6b9ac', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700 }}
+            required
+          />
+        </label>
+        <label style={{ display: 'grid', gap: '6px', fontWeight: 600, fontSize: '14px', color: '#182d32' }}>
+          昵称或座位号 (Nickname)
+          <input
+            value={name}
+            maxLength={40}
+            onChange={e => setName(e.target.value)}
+            placeholder="Your name or seat number"
+            style={{ padding: '10px 12px', fontSize: '16px', border: '1px solid #a6b9ac', borderRadius: '4px' }}
+            required
+          />
+        </label>
+        <button type="submit" className="mj-button" style={{ marginTop: '10px' }}>
+          立即进入课堂 (Enter Classroom) →
+        </button>
+      </form>
+    </div>
+  )
 }
 
 export default function Classroom() {
   const params = new URLSearchParams(window.location.search)
-  const [mode, setMode] = useState(params.has('teacher') ? 'teacher' : params.has('join') ? 'join' : 'choose')
+  const initialMode = params.has('teacher') ? 'teacher' : params.has('join') ? 'join' : 'choose'
+  const [mode, setMode] = useState(initialMode)
   const [code, setCode] = useState((params.get('join') || '').toUpperCase())
   const [name, setName] = useState('')
   const [teacher, setTeacher] = useState(() => read(teacherKey))

@@ -20,7 +20,7 @@ const copy = {
     implication: '对于这个 n，如果 n 个盘有一条走法，使每个盘都用最少的 [[counts]] 次移动完成任务，那么 n+1 个盘也有一条走法，使每个盘都用最少的 [[nextCounts]] 次移动完成任务。',
     base: '只有一个盘时，直接移到另一根柱上只需一步，也不可能更少。',
     conclusion: '因此，由数学归纳法，对于每个正整数 n，从大到小，每个盘最少分别需要移动 [[counts]] 次，并且有一条走法同时做到。总步数最少是：',
-    name: '把这个最少步数记作 Tₙ。一个盘最少移动一次；多一个盘，就用最省步数的走法前后各搬一次小塔，再移动最大盘一次。这个搬运结构说明：',
+    name: '把这个最少步数记作 [[Tn]]。一个盘最少移动一次；多一个盘，就用最省步数的走法前后各搬一次小塔，再移动最大盘一次。这个搬运结构说明：',
     sum: '刚才按每个盘分别计数的证明，也说明了这个数列的通项为什么是下面的和式：',
     back: '返回说明理由', restart: '重新体验', end: '证明完毕',
   },
@@ -40,7 +40,7 @@ const copy = {
     implication: 'for this n, if a route for n discs achieves the minimum counts [[counts]] together, then a route for n + 1 discs achieves the minimum counts [[nextCounts]] together.',
     base: 'With one disc, a direct transfer takes one move, and fewer moves cannot work.',
     conclusion: 'Therefore, by mathematical induction, for every positive integer n, the minimum counts from largest disc to smallest are [[counts]], and a route achieves them together. The minimum total is:',
-    name: 'Call this minimum Tₙ. One disc needs one move. Adding a disc requires two shortest smaller-tower transfers and one move of the largest disc. This structure gives:',
+    name: 'Call this minimum [[Tn]]. One disc needs one move. Adding a disc requires two shortest smaller-tower transfers and one move of the largest disc. This structure gives:',
     sum: 'Counting each disc separately also explains why the general term of this sequence is the following sum:',
     back: 'Back to PROVE', restart: 'Restart experience', end: 'End of proof',
   },
@@ -51,7 +51,7 @@ function Counts({ next = false }) {
   return <strong>{terms.map((tex, i) => <span className="proof-term" key={i}><MathFormula tex={tex.replace(/,$/, String.raw`\hspace{0.45em},\hspace{0.45em}`)} /></span>)}</strong>
 }
 function Text({ value }) {
-  return value.split(/(\[\[(?:counts|nextCounts)\]\])/).map((part, i) => part === '[[counts]]' || part === '[[nextCounts]]' ? <Counts key={i} next={part === '[[nextCounts]]'} /> : part)
+  return value.split(/(\[\[(?:counts|nextCounts|Tn)\]\])/).map((part, i) => part === '[[counts]]' || part === '[[nextCounts]]' ? <Counts key={i} next={part === '[[nextCounts]]'} /> : part === '[[Tn]]' ? <MathFormula key={i} tex='T_n' /> : <MathProse key={i}>{part}</MathProse>)
 }
 function Sum() {
   return <MathFormula tex={String.raw`1+2+\cdots+2^{n-1}`} />
@@ -78,7 +78,7 @@ export function CombinedProofScreen({ onBack, onRestart }) {
     <p>{c.base}</p>
     <p className="appendix-conclusion"><Text value={c.conclusion} /></p>
     <div className="sequence-sum appendix-proof-sum"><Sum /><span className="appendix-qed" aria-label={c.end}>□</span></div>
-    <p>{c.name}</p>
+    <p><Text value={c.name} /></p>
     <div className="sequence-sum"><MathFormula tex={String.raw`T_1=1,\quad T_{n+1}=2T_n+1`} /></div>
     <p>{c.sum}</p>
     <div className="sequence-sum"><MathFormula tex={String.raw`T_n=1+2+\cdots+2^{n-1}`} /></div>

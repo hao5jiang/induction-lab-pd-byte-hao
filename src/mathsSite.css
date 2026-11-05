@@ -72,6 +72,21 @@
 .mj-options { padding:0;border:0;margin:20px 0; }.mj-options legend{font-size:13px;color:#5b7269;margin-bottom:12px}.mj-options label{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid #cad6cc;margin-bottom:10px;line-height:1.6;cursor:pointer}.mj-options input{margin-top:5px;accent-color:#116a64}
 .mj-footer { display:flex;align-items:center;justify-content:space-between;border-top:1px solid #cbd6ce;margin-top:36px;padding-top:24px;gap:14px;font-size:13px; }
 .mj-site :focus-visible { outline:3px solid #c67b33; outline-offset:4px; }
+.mj-board-art { width:110px; height:105px; display:grid; grid-template-columns:repeat(4,1fr); gap:3px; margin:24px auto 0; background:#1c272a; padding:4px; border-radius:4px; border:1px solid #455a60; }
+.mj-board-art span { display:block; border-radius:2px; }
+.mj-board-art .missing-cell { background:#e74c3c; opacity:0.85; position:relative; }
+.mj-board-art .missing-cell::after { content:'✕'; color:white; font-size:11px; font-weight:bold; display:flex; align-items:center; justify-content:center; height:100%; }
+.mj-course.tromino { background:#e2ede8; border-color:#bed1ca; }
+.mj-category-section { margin-top:40px; }
+.mj-category-header { display:flex; align-items:baseline; justify-content:space-between; border-bottom:2px solid #ccd6cf; padding-bottom:8px; margin-bottom:24px; }
+.mj-category-header h2 { font:24px/1.3 Georgia,serif; margin:0; color:#182d32; }
+.mj-category-header span { font-size:12px; font-weight:700; letter-spacing:1.5px; color:var(--teal); }
+.mj-role-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:14px; font-size:12px; font-weight:600; text-decoration:none; }
+.mj-role-badge.teacher { background:#253736; color:#a3e0d8; border:1px solid #365551; }
+.mj-role-badge.student { background:#2d3a4b; color:#a9cef4; border:1px solid #3d5067; }
+.mj-role-badge:hover { opacity:0.85; }
+.mj-switch-role { font-size:13px; color:#5c736e; }
+.mj-switch-role a { color:var(--teal); font-weight:600; text-decoration:underline; }
 .mj-return { display:block;padding:10px 22px;color:#f5d49c;background:#122c34;font:14px "Segoe UI",sans-serif;text-decoration:none; }
 .mj-slope-badge { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; border-left:4px solid currentColor; border-radius:4px; font-variant-numeric:tabular-nums; }
 .mj-slope-badge.secant { color:#69378e; background:#f0e8f6; }

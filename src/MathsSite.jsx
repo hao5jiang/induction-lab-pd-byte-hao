@@ -1,14 +1,18 @@
 import { useEffect, useId, useState } from 'react'
 import App from './App.jsx'
-import Classroom from './Classroom.jsx'
+import Classroom, { StudentJoinView } from './Classroom.jsx'
 import { valueAt, slopeAt, secantSlope, componentFunction } from './derivativeMath.js'
+import { TrominoActivity } from './TrominoScreen.jsx'
 import './mathsSite.css'
 import { MathFormula, MathText } from './MathText.jsx'
 
 const sections = ['From two points to a tangent', 'What does (2)′ mean?', 'Its own derivative', 'Why only Ceˣ?', 'Find the gap', 'Repair the claim']
-function siteUrl(topic) {
+function siteUrl(topic, role = null) {
   const url = new URL(window.location.href)
   url.search = topic ? `?topic=${topic}` : ''
+  if (role) {
+    url.searchParams.set('role', role)
+  }
   url.hash = ''
   return window.location.protocol === 'file:' ? url.href : url.pathname + url.search
 }
@@ -133,6 +137,8 @@ function CorrectedClaim() {
 }
 export default function MathsSite() {
   const params = new URLSearchParams(window.location.search)
+  const role = params.get('role') || 'teacher'
+  const isStudent = role === 'student'
   const topic = params.get('topic') || (window.__MR_JIANG_OFFLINE_DERIVATIVES__ ? 'derivatives' : null)
   const legacy = ['join','teacher','classroom','stage','code'].some(key=>params.has(key)) || /access_token|type=recovery|code=/.test(window.location.hash)
   const [page,setPage]=useState(0)
@@ -140,9 +146,96 @@ export default function MathsSite() {
   const [selfDerivativeFinished,setSelfDerivativeFinished]=useState(false)
   const [proofFinished,setProofFinished]=useState(false)
   const [gapSeen,setGapSeen]=useState(false)
-  useEffect(()=>{ if(topic!=='induction' && !legacy) {document.title=topic==='derivatives' ? 'Derivatives · Mr Jiang Maths' : 'Mr Jiang Maths';document.documentElement.lang='en'} },[topic,legacy])
+  useEffect(()=>{ 
+    if(topic!=='induction' && !legacy) {
+      document.title = topic==='derivatives' 
+        ? 'Derivatives · Mr Jiang Maths' 
+        : topic==='tromino' 
+          ? 'Tromino Tiling · Mr Jiang Maths' 
+          : isStudent 
+            ? 'Student Portal · Mr Jiang Maths' 
+            : 'Mr Jiang Maths';
+      document.documentElement.lang='en'
+    } 
+  },[topic,legacy,isStudent])
   if (!topic && (params.has('join') || params.has('teacher') || params.has('classroom'))) return <Classroom />
-  if(topic==='induction' || (!topic && legacy)) return <><a className="mj-return" href={siteUrl('')}>← Mr Jiang Maths</a><App onOpenClassroom={() => { location.href = `${location.pathname}?classroom=1` }} /></>
-  if(topic==='derivatives') return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('')}>Mr Jiang<span>Maths</span></a>{window.__MR_JIANG_OFFLINE_DERIVATIVES__ ? <span>Offline student copy</span> : <a href={siteUrl('induction')}>Mathematical induction ↗</a>}</div><main className="mj-lesson"><nav className="mj-tabs" aria-label="Derivative activities">{sections.map((name,i)=><button key={name} aria-current={i===page?'step':undefined} disabled={(i>1 && !constantPassed) || (i>2 && !selfDerivativeFinished) || (i>3 && !proofFinished) || (i===5 && !gapSeen)} onClick={()=>{setPage(i);window.scrollTo(0,0)}}><span>0{i+1}</span><MathText>{name}</MathText></button>)}</nav>{[<ValueActivity />,<ConstantActivity onAnswerStatusChange={setConstantPassed} />,<SelfDerivative onReachedFinalStep={()=>setSelfDerivativeFinished(true)} />,<ProofActivity onReachedFinalStep={()=>setProofFinished(true)} />,<DomainActivity onFoundGap={()=>setGapSeen(true)} />,<CorrectedClaim />].map((element,i)=><div key={i} hidden={i!==page}>{element}</div>)}<footer className="mj-footer"><button className="mj-button secondary" disabled={page===0} onClick={()=>{setPage(page-1);window.scrollTo(0,0)}}>← Back</button><span>{page+1} / 6</span><button className="mj-button" disabled={page===5 || (page===1 && !constantPassed) || (page===2 && !selfDerivativeFinished) || (page===3 && !proofFinished) || (page===4 && !gapSeen)} onClick={()=>{setPage(page+1);window.scrollTo(0,0)}}>Continue →</button></footer></main></div>
-  return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('')}>Mr Jiang<span>Maths</span></a><span>Think it through.</span></div><main className="mj-home"><header><span className="mj-kicker">A PLACE TO ASK WHY</span><h1><MathText>Explore the idea.<br /><em>Explain the reasoning.</em></MathText></h1><p><MathText>Interactive mathematics with room to try, question and prove.</MathText></p></header><div className="mj-courses"><a className="mj-course induction" href={siteUrl('induction')}><span className="mj-course-number">01 / PROOF</span><div className="mj-disc-art" aria-hidden="true"><i /><i /><i /><i /></div><h2><MathText>Mathematical induction</MathText></h2><p><MathText>Move a tower. Build an argument. Understand how one case supports the next.</MathText></p><strong>Enter the induction lab <span>↗</span></strong></a><a className="mj-course derivatives" href={siteUrl('derivatives')}><span className="mj-course-number">02 / CALCULUS</span><div className="mj-equation-art" aria-hidden="true"><MathFormula tex={"f'=f"} /><span>What counts as an example?</span></div><h2><MathText>Functions & derivatives</MathText></h2><p><MathText>What does (2)′ mean? Can a function be its own derivative? How much does the domain matter?</MathText></p><strong>Explore derivatives <span>↗</span></strong></a></div><p className="mj-home-foot"><MathText>Start with a question. Reveal the explanation when you are ready.</MathText></p></main></div>
+  if(topic==='induction' || (!topic && legacy)) {
+    if (isStudent && !params.has('stage')) {
+      return (
+        <div className="mj-site">
+          <div className="mj-topbar">
+            <a className="mj-brand" href={siteUrl('', 'student')}>Mr Jiang<span>Maths (Student)</span></a>
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+              <a href={siteUrl('', 'student')}>← 返回首页 (Home)</a>
+            </div>
+          </div>
+          <main className="mj-lesson">
+            <StudentJoinView defaultCode={params.get('code') || ''} />
+          </main>
+        </div>
+      )
+    }
+    return <><a className="mj-return" href={siteUrl('', role)}>← Mr Jiang Maths</a><App onOpenClassroom={() => { location.href = location.pathname + '?classroom=1' }} /></>
+  }
+  if(topic==='tromino') return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('', role)}>Mr Jiang<span>Maths</span></a><div style={{ display: 'flex', gap: '16px' }}><a href={siteUrl('induction', role)}>Hanoi Tower ↗</a><a href={siteUrl('derivatives', role)}>Derivatives ↗</a></div></div><main className="mj-lesson"><TrominoActivity /></main></div>
+  if(topic==='derivatives') return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('', role)}>Mr Jiang<span>Maths</span></a>{window.__MR_JIANG_OFFLINE_DERIVATIVES__ ? <span>Offline student copy</span> : <a href={siteUrl('induction', role)}>Mathematical induction ↗</a>}</div><main className="mj-lesson"><nav className="mj-tabs" aria-label="Derivative activities">{sections.map((name,i)=><button key={name} aria-current={i===page?'step':undefined} disabled={(i>1 && !constantPassed) || (i>2 && !selfDerivativeFinished) || (i>3 && !proofFinished) || (i===5 && !gapSeen)} onClick={()=>{setPage(i);window.scrollTo(0,0)}}><span>0{i+1}</span><MathText>{name}</MathText></button>)}</nav>{[<ValueActivity />,<ConstantActivity onAnswerStatusChange={setConstantPassed} />,<SelfDerivative onReachedFinalStep={()=>setSelfDerivativeFinished(true)} />,<ProofActivity onReachedFinalStep={()=>setProofFinished(true)} />,<DomainActivity onFoundGap={()=>setGapSeen(true)} />,<CorrectedClaim />].map((element,i)=><div key={i} hidden={i!==page}>{element}</div>)}<footer className="mj-footer"><button className="mj-button secondary" disabled={page===0} onClick={()=>{setPage(page-1);window.scrollTo(0,0)}}>← Back</button><span>{page+1} / 6</span><button className="mj-button" disabled={page===5 || (page===1 && !constantPassed) || (page===2 && !selfDerivativeFinished) || (page===3 && !proofFinished) || (page===4 && !gapSeen)} onClick={()=>{setPage(page+1);window.scrollTo(0,0)}}>Continue →</button></footer></main></div>
+  return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('', role)}>Mr Jiang<span>Maths</span></a><div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span className={`mj-role-badge ${isStudent ? 'student' : 'teacher'}`}>{isStudent ? '学生版 · Student' : '教师版 · Teacher'}</span><a className="mj-switch-role" href={siteUrl('', isStudent ? 'teacher' : 'student')}>{isStudent ? '切换至教师端 ↗' : '切换至学生端 ↗'}</a></div></div><main className="mj-home"><header><span className="mj-kicker">{isStudent ? 'STUDENT LEARNING PORTAL · 学生探索' : 'TEACHER & PRESENTATION PORTAL · 教学与演示'}</span><h1><MathText>{isStudent ? 'Explore, Question & Learn' : 'Explore the idea.<br /><em>Explain the reasoning.</em>'}</MathText></h1><p><MathText>{isStudent ? '随时加入课堂互动，体验汉诺塔归纳推导与棋盘问题。' : 'Interactive mathematics with room to try, question and prove.'}</MathText></p></header>
+
+    <section className="mj-category-section">
+      <div className="mj-category-header">
+        <h2>Mathematical Induction · 数学归纳法专题</h2>
+        <span>SECTION 01</span>
+      </div>
+      <div className="mj-courses" style={{ marginTop: '0' }}>
+        <a className="mj-course induction" href={siteUrl('induction', role)}>
+          <span className="mj-course-number">01 / DISCRETE RECURSION</span>
+          <div className="mj-disc-art" aria-hidden="true"><i /><i /><i /><i /></div>
+          <h2><MathText>Tower of Hanoi · 汉诺塔</MathText></h2>
+          <p><MathText>{isStudent ? '输入教师课堂码立即加入课堂练习，参与课内互动推导。' : 'Move a tower. Build an argument. Understand how the base case and recurrence support the next stage.'}</MathText></p>
+          <strong>{isStudent ? '进入课堂参与 (Join Class) ↗' : 'Enter the induction lab (Standalone) ↗'}</strong>
+        </a>
+        <a className="mj-course tromino" href={siteUrl('tromino', role)}>
+          <span className="mj-course-number">02 / 2D TILING & DIVIDE-AND-CONQUER</span>
+          <div className="mj-board-art" aria-hidden="true">
+            <span style={{ background: '#2a7b72' }} />
+            <span style={{ background: '#2a7b72' }} />
+            <span style={{ background: '#4a6fa5' }} />
+            <span style={{ background: '#4a6fa5' }} />
+            <span style={{ background: '#2a7b72' }} />
+            <span style={{ background: '#d97736' }} />
+            <span style={{ background: '#d97736' }} />
+            <span style={{ background: '#4a6fa5' }} />
+            <span style={{ background: '#3f88c5' }} />
+            <span style={{ background: '#d97736' }} />
+            <span className="missing-cell" title="Missing square" />
+            <span style={{ background: '#7a5195' }} />
+            <span style={{ background: '#3f88c5' }} />
+            <span style={{ background: '#3f88c5' }} />
+            <span style={{ background: '#7a5195' }} />
+            <span style={{ background: '#7a5195' }} />
+          </div>
+          <h2><MathText>Deficient Board · 残缺棋盘</MathText></h2>
+          <p><MathText>Tiling a 2^n \times 2^n board missing one square with L-trominoes. Experience constructive induction.</MathText></p>
+          <strong>Explore tromino tiling <span>↗</span></strong>
+        </a>
+      </div>
+    </section>
+
+    <section className="mj-category-section" style={{ marginTop: '54px' }}>
+      <div className="mj-category-header">
+        <h2>Calculus & Analysis · 微积分专题</h2>
+        <span>SECTION 02</span>
+      </div>
+      <div className="mj-courses" style={{ marginTop: '0', gridTemplateColumns: 'minmax(0, 1fr) 1fr' }}>
+        <a className="mj-course derivatives" href={siteUrl('derivatives', role)}>
+          <span className="mj-course-number">03 / DERIVATIVES & RIGOR</span>
+          <div className="mj-equation-art" aria-hidden="true"><MathFormula tex={"f'=f"} /><span>What counts as an example?</span></div>
+          <h2><MathText>Functions & Derivatives</MathText></h2>
+          <p><MathText>What does (2)′ mean? Can a function be its own derivative? How much does the domain matter?</MathText></p>
+          <strong>Explore derivatives <span>↗</span></strong>
+        </a>
+      </div>
+    </section>
+
+    <p className="mj-home-foot"><MathText>Start with a question. Reveal the explanation when you are ready.</MathText></p></main></div>
 }

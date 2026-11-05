@@ -117,7 +117,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
           <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><MathFormula tex={String.raw`T_n = G_n = 1 + 2 + \cdots + 2^{n-1}`} /></div></div>
         </details>
     </div>
-    {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p>{copy.teacher}</p></aside>}
+    {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p><DiscCountText value={copy.teacher} /></p></aside>}
     <footer className="sequence-footer">
       <button className="sequence-button" type="button" onClick={onBack}><ArrowIcon direction="left" />{common.back}</button>
       <button className="sequence-button is-primary" type="button" onClick={onNext}>{locale === 'zh' ? '查看附录' : 'Open the appendix'}<ArrowIcon /></button>

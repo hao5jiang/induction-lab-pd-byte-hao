@@ -72,6 +72,7 @@ export function AppHeader({
       ) : (
         <div className="header-actions">
           <LanguageSwitcher />
+          <a className="classroom-link" href="?topic=tromino" style={{ textDecoration: 'none' }}>{language === 'zh' ? '棋盘覆盖 ↗' : 'Tromino ↗'}</a>
           {onOpenClassroom && <button className="classroom-link" onClick={onOpenClassroom} type="button">{t("Classroom")}</button>}
           <label className="lens-toggle">
             <span>{t("Teacher lens")}</span>
@@ -207,11 +208,7 @@ export function PlayScreen({
           setSelectedPeg={setSelectedPeg}
         />
 
-        {!studentMode && (
-          <div className="play-equation" aria-label={t("Unknown moves plus one plus unknown moves")}>
-            <span>?</span><b>+</b><span>1</span><b>+</b><span>?</span>
-          </div>
-        )}
+        
 
         <div className={`game-message ${completed ? 'is-complete' : ''}`}>
           <p>{t(message)}</p>

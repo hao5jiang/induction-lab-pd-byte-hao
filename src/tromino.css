@@ -1,0 +1,139 @@
+.tromino-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.tromino-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.tromino-board-wrapper {
+  position: relative;
+  background: #253338;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  display: inline-block;
+  user-select: none;
+}
+
+.tromino-board {
+  display: grid;
+  gap: 3px;
+  background: #1c272a;
+  border: 2px solid #405359;
+  border-radius: 4px;
+  padding: 3px;
+}
+
+.tromino-cell {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.12s, filter 0.12s, background-color 0.2s;
+  box-sizing: border-box;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.tromino-cell:hover:not(.missing):not(.tiled) {
+  transform: scale(1.08);
+  outline: 2px solid #ffd166;
+  z-index: 2;
+}
+
+.tromino-cell.empty {
+  background: #324348;
+}
+
+.tromino-cell.empty:hover {
+  background: #3e5359;
+}
+
+.tromino-cell.missing {
+  background: #12181a;
+  border: 2px dashed #e74c3c;
+  cursor: default;
+  color: #e74c3c;
+}
+
+.tromino-cell.missing::after {
+  content: '✕';
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.tromino-cell.tiled {
+  cursor: default;
+}
+
+.tromino-cell.highlight-step {
+  animation: pulse-border 1.2s infinite alternate;
+}
+
+@keyframes pulse-border {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.35); box-shadow: inset 0 0 8px rgba(255,255,255,0.8); }
+}
+
+.tromino-info-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: #eef2ed;
+  border: 1px solid #ccd6cc;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #2c423f;
+  font-weight: 500;
+}
+
+.tromino-formula-box {
+  background: #f7faf6;
+  border-left: 4px solid #116a64;
+  padding: 16px 20px;
+  margin: 18px 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.tromino-subdivisions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.tromino-sub-card {
+  padding: 12px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #dcdfd8;
+  font-size: 13px;
+}
+
+.tromino-sub-card.has-missing {
+  border-color: #116a64;
+  background: #f0f7f5;
+}
+
+@media (max-width: 540px) {
+  .tromino-cell {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+}
