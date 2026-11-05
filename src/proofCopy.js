@@ -33,7 +33,7 @@ export const proofCopy = {
       "lowerBase": "只有一个盘时，要从一根柱搬到另一根柱，至少得移动一次。",
       "lowerSteps": [
         "现在考虑 n+1 个盘。最大盘第一次移动前，它上面的小盘必须全部移开，接收最大盘的柱子也必须空着。因此，这 n 个小盘已经从起始柱完整搬到了另一根柱上。",
-        "再看最大盘移动到目标柱上，再把小塔搬到目标柱的过程：移动最大盘时，小盘不能在最大盘上，也不能在目标柱上，只能完整叠在第三根柱上。接下来，小塔还必须完整搬到目标柱，任务才算完成。",
+        "最大盘移动到目标柱上，再把小塔搬到目标柱子。",
         "同一座 n 盘小塔前后各搬一次，因此每个小盘至少要移动的次数都翻倍。最大盘本身至少移动一次。"
       ],
       "attainDefinition": "按这套搬法完成搬运，搬完 n 个盘所用的步数记作 [[Gn]]。",
@@ -74,7 +74,7 @@ export const proofCopy = {
       "lowerBase": "One disc needs at least one move to reach another peg.",
       "lowerSteps": [
         "Consider n + 1 discs. Before the largest disc first moves, every smaller disc must leave it, and the receiving peg must be empty. The n smaller discs have therefore already been transferred as a complete tower to another peg.",
-        "Now consider moving the largest disc onto the target peg, then transferring the smaller tower to the target. As the largest disc moves, the smaller discs can be neither on it nor on the target peg. They must be stacked on the third peg, and must still be transferred completely to the target to finish.",
+        "Move the largest disc to the target peg, then move the smaller tower to the target peg.",
         "The same n-disc tower is transferred once before and once after, so each smaller disc’s lower bound doubles. The largest disc itself moves at least once."
       ],
       "attainDefinition": "Denote the number of moves this method uses to move n discs by [[Gn]].",
