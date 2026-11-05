@@ -7,6 +7,14 @@ export function MathFormula({ tex, display = false }) {
   return <Tag className={display ? 'mj-typeset-display' : 'mj-typeset-inline'} dangerouslySetInnerHTML={{ __html: katex.renderToString(tex, { displayMode: display, throwOnError: true, trust: false, output: 'htmlAndMathml' }) }} />
 }
 
+// Render numeric and simple induction expressions within explanatory prose.
+export function MathProse({ children }) {
+  if (typeof children !== 'string') return children
+  const pieces = children.split(/((?<![A-Za-z0-9])(?:n\s*[+−-]\s*\d+|n|\d+(?:\.\d+)?)(?![A-Za-z0-9]))/g)
+  return pieces.map((piece, index) => /^(?:n\s*[+−-]\s*\d+|n|\d+(?:\.\d+)?)$/.test(piece)
+    ? <MathFormula key={index} tex={piece.replace('−', '-')} /> : piece)
+}
+
 export const expressions = {
   '(−∞, 0) ∪ (0, ∞)': String.raw`(-\infty,0)\cup(0,\infty)`,
   'f′(x) = f(x)': String.raw`f'(x)=f(x)`,

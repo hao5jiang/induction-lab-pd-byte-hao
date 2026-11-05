@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useLanguage } from './Language.jsx'
 import { existenceCopy } from './existenceCopy.js'
 import { MiniTower } from './Tower.jsx'
+import { MathFormula, MathProse } from './MathText.jsx'
 
 export function ExistenceProof() {
   const language = useLanguage()
@@ -13,9 +14,9 @@ export function ExistenceProof() {
     <p>{copy.intro}</p>
     <div className="existence-guiding-questions">
       {language === 'zh' ? <>
-        <p>已会搬 <strong>2 个盘</strong>，怎样借此搬 <strong>2+1 个盘</strong>？<br />已会搬 <strong>3 个盘</strong>，怎样借此搬 <strong>3+1 个盘</strong>？</p>
+        <p>已会搬 <strong><MathFormula tex="2" /> 个盘</strong>，怎样借此搬 <strong><MathFormula tex="2+1" /> 个盘</strong>？<br />已会搬 <strong><MathFormula tex="3" /> 个盘</strong>，怎样借此搬 <strong><MathFormula tex="3+1" /> 个盘</strong>？</p>
         <p>这两次的做法有什么相同之处？</p>
-        <p className="existence-general-question">对于每个盘数 n，只要已会搬 n 个盘，就能借此搬 n+1 个盘吗？</p>
+        <p className="existence-general-question"><MathProse>对于每个盘数 n，只要已会搬 n 个盘，就能借此搬 n+1 个盘吗？</MathProse></p>
       </> : <><p>{copy.lead}</p><p className="existence-general-question">{copy.leadQuestion}</p></>}
     </div>
     <div id="existence-aids" hidden={aidsHidden}>
@@ -28,7 +29,7 @@ export function ExistenceProof() {
       <summary>{copy.reveal}</summary>
       <div className="shortest-diagrams existence-diagrams">
         {['clear', 'largest', 'rebuild'].map((stage, index) => <div key={stage}>
-          <div className="stage-title"><span>{index + 1}</span><p>{copy.diagramCaptions[index]}</p></div>
+          <div className="stage-title"><span><MathFormula tex={String(index + 1)} /></span><p><MathProse>{copy.diagramCaptions[index]}</MathProse></p></div>
           <MiniTower count={5} stage={stage} />
           <div className="shortest-peg-labels" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div>
         </div>)}
@@ -36,9 +37,9 @@ export function ExistenceProof() {
       <div className="existence-fitch-scope">
         <h3 className="existence-assumption-title">{copy.stepTitle}</h3>
         <div className="existence-fitch-inner">
-          <p><strong className="existence-logic-marker">{copy.assumptionLead}</strong>{copy.assumptionBody}</p>
-          <p>{copy.extension}</p>
-          <ol>{copy.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>
+          <p><strong className="existence-logic-marker">{copy.assumptionLead}</strong><MathProse>{copy.assumptionBody}</MathProse></p>
+          <p><MathProse>{copy.extension}</MathProse></p>
+          <ol>{copy.steps.map((step, index) => <li key={index}><MathProse>{step}</MathProse></li>)}</ol>
           <aside className="existence-method-note"><strong>{copy.methodFreedom}</strong></aside>
           <p className="existence-fitch-result"><strong className="existence-logic-marker">{copy.constructionLead}</strong>{copy.constructionResult}</p>
         </div>

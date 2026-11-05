@@ -1,6 +1,7 @@
 import { useLanguage } from './Language.jsx'
 import { ArrowIcon, ResetIcon } from './icons.jsx'
 import { proofCopy } from './proofCopy.js'
+import { MathFormula } from './MathText.jsx'
 
 const copy = {
   zh: {
@@ -46,13 +47,14 @@ const copy = {
 }
 
 function Counts({ next = false }) {
-  return <strong>{next ? '1, 2 × 1, 2 × 2, 2 × ' : '1, 2, '}2<sup>2</sup>, …, {next ? '2 × ' : ''}<span style={{ whiteSpace: 'nowrap' }}>2<sup>n − 1</sup></span></strong>
+  const terms = next ? ['1,', String.raw`2\times1,`, String.raw`2\times2,`, String.raw`2\times2^2,`, String.raw`\ldots,`, String.raw`2\times2^{n-1}`] : ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}']
+  return <strong>{terms.map((tex, i) => <span className="proof-term" key={i}><MathFormula tex={tex} />{i < terms.length - 1 ? ' ' : ''}</span>)}</strong>
 }
 function Text({ value }) {
   return value.split(/(\[\[(?:counts|nextCounts)\]\])/).map((part, i) => part === '[[counts]]' || part === '[[nextCounts]]' ? <Counts key={i} next={part === '[[nextCounts]]'} /> : part)
 }
 function Sum() {
-  return <span>1 + 2 + ··· + <span style={{ whiteSpace: 'nowrap' }}>2<sup>n − 1</sup></span></span>
+  return <MathFormula tex={String.raw`1+2+\cdots+2^{n-1}`} />
 }
 export function CombinedProofScreen({ onBack, onRestart }) {
   const locale = useLanguage()
@@ -67,7 +69,6 @@ export function CombinedProofScreen({ onBack, onRestart }) {
         <p><strong className="reasoning-fitch-assume">{c.assume}</strong> <Text value={c.assumption} /></p>
         {lower.lowerSteps.slice(0, 2).map(step => <p key={step}>{step}</p>)}
         <p>{c.double}</p>
-        <details><summary>{lower.bridgeTitle}</summary><p>{lower.bridge}</p></details>
         <p>{c.construct}</p>
         <details><summary>{c.roles}</summary><p>{c.rolesText}</p></details>
         <p><strong className="reasoning-fitch-assume">{c.thus}</strong><Text value={c.result} /></p>
@@ -78,9 +79,9 @@ export function CombinedProofScreen({ onBack, onRestart }) {
     <p className="appendix-conclusion"><Text value={c.conclusion} /></p>
     <div className="sequence-sum"><Sum /><span className="appendix-qed" aria-label={c.end}>□</span></div>
     <p>{c.name}</p>
-    <div className="sequence-sum"><span>T<sub>1</sub> = 1, <span style={{ whiteSpace: 'nowrap' }}>T<sub>n + 1</sub> = 2T<sub>n</sub> + 1</span></span></div>
+    <div className="sequence-sum"><MathFormula tex={String.raw`T_1=1,\quad T_{n+1}=2T_n+1`} /></div>
     <p>{c.sum}</p>
-    <div className="sequence-sum"><span>T<sub>n</sub> = <Sum /></span></div>
+    <div className="sequence-sum"><MathFormula tex={String.raw`T_n=1+2+\cdots+2^{n-1}`} /></div>
     <footer className="sequence-footer"><button className="sequence-button" type="button" onClick={onBack}><ArrowIcon direction="left" />{c.back}</button><button className="sequence-button is-primary" type="button" onClick={onRestart}>{c.restart}<ResetIcon /></button></footer>
   </section>
 }

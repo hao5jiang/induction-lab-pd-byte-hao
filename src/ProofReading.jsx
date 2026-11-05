@@ -8,16 +8,18 @@ import { MiniTower } from './Tower.jsx'
 import { MathFormula } from './MathText.jsx'
 
 function Sum() {
-  return <span>1 + 2 + ··· + <span style={{ whiteSpace: 'nowrap' }}>2<sup>n − 1</sup></span></span>
+  return <MathFormula tex={String.raw`1 + 2 + \cdots + 2^{n-1}`} />
 }
 
 function DiscCountText({ value }) {
   return value.split(/(\[\[(?:[TG](?:1|n|next)|counts|nextCounts)\]\])/).map((part, index) => {
-    if (part === '[[counts]]') return <strong key={index}>1, 2, 2<sup>2</sup>, …, <span className="proof-term">2<sup>n − 1</sup></span></strong>
-    if (part === '[[nextCounts]]') return <strong key={index}>1, 2 × 1, 2 × 2, 2 × 2<sup>2</sup>, …, <span className="proof-term">2 × 2<sup>n − 1</sup></span></strong>
+    if (part === '[[counts]]' || part === '[[nextCounts]]') {
+      const terms = part === '[[counts]]' ? ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}'] : ['1,', String.raw`2\times1,`, String.raw`2\times2,`, String.raw`2\times2^2,`, String.raw`\ldots,`, String.raw`2\times2^{n-1}`]
+      return <strong key={index}>{terms.map((tex, i) => <span className="proof-term" key={i}><MathFormula tex={tex} />{i < terms.length - 1 ? ' ' : ''}</span>)}</strong>
+    }
     const match = part.match(/^\[\[([TG])(1|n|next)\]\]$/)
-    if (match) return <span key={index} style={{ whiteSpace: 'nowrap' }}>{match[1]}<sub>{match[2] === 'next' ? 'n + 1' : match[2]}</sub></span>
-    return part
+    if (match) return <span key={index} className="proof-term"><MathFormula tex={`${match[1]}_{${match[2] === 'next' ? 'n+1' : match[2]}}`} /></span>
+    return <Fragment key={index}>{part.split(/((?<![A-Za-z0-9])(?:n\s*[+−-]\s*\d+|n|\d+(?:\.\d+)?)(?![A-Za-z0-9]))/g).map((piece, i) => /^(?:n\s*[+−-]\s*\d+|n|\d+(?:\.\d+)?)$/.test(piece) ? <MathFormula key={i} tex={piece.replace('−', '-')} /> : piece)}</Fragment>
   })
 }
 
@@ -100,7 +102,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.general} /></p>
           <div className="sequence-sum"><Sum /></div>
           <p>{locale === 'zh' ? <>把<strong className="attainment-term">这个步数下界</strong>记作 <strong className="attainment-term">T<sub>n</sub></strong>。</> : <>Call <strong className="attainment-term">this move lower bound</strong> <strong className="attainment-term">T<sub>n</sub></strong>. </>}<DiscCountText value={copy.boundName.slice(copy.boundName.indexOf('[[Tn]]') + '[[Tn]]'.length).replace(/^[。.]\s*/, '')} /></p>
-          <div className="sequence-sum"><span>T<sub>n</sub> = <Sum /></span></div>
+          <div className="sequence-sum"><MathFormula tex={String.raw`T_n = 1 + 2 + \cdots + 2^{n-1}`} /></div>
         </details>
         <details id="attain-bound" className={`reasoning-connection${highlightAttainment ? ' is-highlighted' : ''}`}><summary>{copy.attainTitle}</summary>
           <p>{renderAttainment(locale === 'zh' ? '设 n 是一个正整数。在[[existence]]中，我们已经证明 n 个盘能搬完。' : 'Let n be a positive integer. On [[existence]], we proved that n discs can be moved.')}</p>
@@ -112,7 +114,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
           <p>{locale === 'zh' ? <>按这套搬法完成搬运，<strong className="attainment-term">搬完 n 个盘所用的步数</strong>记作 <strong className="attainment-term">G<sub>n</sub></strong>。</> : <>Denote <strong className="attainment-term">the number of moves this method uses to move n discs</strong> by <strong className="attainment-term">G<sub>n</sub></strong>.</>}</p>
           <p>{renderAttainment(copy.attainRecurrence)}</p>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.attainGeneral} /></p>
-          <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><span>T<sub>n</sub> = G<sub>n</sub> = <Sum /></span></div></div>
+          <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><MathFormula tex={String.raw`T_n = G_n = 1 + 2 + \cdots + 2^{n-1}`} /></div></div>
         </details>
     </div>
     {teacherLens && <aside className="sequence-teacher-cue" aria-label={t('Teacher lens')}><strong>{t('TEACHER LENS')}</strong><p>{copy.teacher}</p></aside>}

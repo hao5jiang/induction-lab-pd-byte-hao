@@ -4,6 +4,7 @@ import { isComplete, makePegs, moveDisk } from './game.js'
 import { ArrowIcon, PlayIcon, ResetIcon } from './icons.jsx'
 import { Tower } from './Tower.jsx'
 import { discCountsCopy } from './discCountsCopy.js'
+import { MathFormula } from './MathText.jsx'
 import './sequence.css'
 import './discCounts.css'
 
@@ -40,19 +41,19 @@ function DiscCounts({ count, discMoves, moves, copy }) {
           <li key={disc}>
             <span className="disc-counts-shape" aria-hidden="true"><i className={`disk-${colors[colors.length - count + disc - 1]}`} style={{ width: `${40 + 60 * disc / count}%` }} /></span>
             <span className="disc-counts-label">{count === 1 ? copy.only : disc === 1 ? copy.smallest : copy.labels[index]}</span>
-            <span className="disc-counts-value"><strong>{discMoves[disc - 1]}</strong><small>{copy.unit(discMoves[disc - 1])}</small></span>
+            <span className="disc-counts-value"><strong><MathFormula tex={String(discMoves[disc - 1])} /></strong><small>{copy.unit(discMoves[disc - 1])}</small></span>
           </li>
         ))}
       </ol>
-      <div className="disc-counts-total"><span>{copy.total}</span><strong>{count > 1 && `${discs.map((disc) => discMoves[disc - 1]).join(' + ')} = `}{moves}</strong></div>
+      <div className="disc-counts-total"><span>{copy.total}</span><strong><MathFormula tex={`${count > 1 ? discs.map((disc) => discMoves[disc - 1]).join(' + ') + ' = ' : ''}${moves}`} /></strong></div>
     </section>
   )
 }
 
 function expandedSum(count) {
-  if (count < 1) return '0'
+  if (count < 1) return <MathFormula tex="0" />
   return Array.from({ length: count }, (_, index) => (
-    <span key={index}>{index > 0 && ' + '}{t(index === 0 ? '1' : index === 1 ? '2' : <>2<sup>{index}</sup></>)}</span>
+    <span key={index}><MathFormula tex={`${index > 0 ? '+ ' : ''}${index === 0 ? '1' : index === 1 ? '2' : `2^{${index}}`}`} /></span>
   ))
 }
 
