@@ -48,7 +48,7 @@ const copy = {
 
 function Counts({ next = false }) {
   const terms = next ? ['1,', '2,', String.raw`2\cdot2,`, String.raw`2^2\cdot2,`, String.raw`\cdots,`, String.raw`2^{n-1}\cdot2`] : ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}']
-  return <strong>{terms.map((tex, i) => <span className="proof-term" key={i} style={{ marginRight: i < terms.length - 1 ? '0.45em' : undefined }}><MathFormula tex={tex} /></span>)}</strong>
+  return <strong>{terms.map((tex, i) => <span className="proof-term" key={i} style={{ marginRight: i < terms.length - 1 ? '0.9em' : undefined }}><MathFormula tex={tex} /></span>)}</strong>
 }
 function Text({ value }) {
   return value.split(/(\[\[(?:counts|nextCounts)\]\])/).map((part, i) => part === '[[counts]]' || part === '[[nextCounts]]' ? <Counts key={i} next={part === '[[nextCounts]]'} /> : part)

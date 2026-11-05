@@ -15,7 +15,7 @@ function DiscCountText({ value }) {
   return value.split(/(\[\[(?:[TG](?:1|n|next)|counts|nextCounts)\]\])/).map((part, index) => {
     if (part === '[[counts]]' || part === '[[nextCounts]]') {
       const terms = part === '[[counts]]' ? ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}'] : ['1,', '2,', String.raw`2\cdot2,`, String.raw`2^2\cdot2,`, String.raw`\cdots,`, String.raw`2^{n-1}\cdot2`]
-      return <strong key={index}>{terms.map((tex, i) => <span className="proof-term" key={i} style={{ marginRight: i < terms.length - 1 ? '0.45em' : undefined }}><MathFormula tex={tex} /></span>)}</strong>
+      return <strong key={index}>{terms.map((tex, i) => <span className="proof-term" key={i} style={{ marginRight: i < terms.length - 1 ? '0.9em' : undefined }}><MathFormula tex={tex} /></span>)}</strong>
     }
     const match = part.match(/^\[\[([TG])(1|n|next)\]\]$/)
     if (match) return <span key={index} className="proof-term"><MathFormula tex={`${match[1]}_{${match[2] === 'next' ? 'n+1' : match[2]}}`} /></span>
