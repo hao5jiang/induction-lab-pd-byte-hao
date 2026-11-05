@@ -99,7 +99,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
           <p><DiscCountText value={copy.lowerBase} /></p>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.general} /></p>
           <div className="sequence-sum"><Sum /></div>
-          <p><DiscCountText value={copy.boundName} /></p>
+          <p>{locale === 'zh' ? <>把<strong className="attainment-term">这个步数下界</strong>记作 <strong className="attainment-term">T<sub>n</sub></strong>。</> : <>Call <strong className="attainment-term">this move lower bound</strong> <strong className="attainment-term">T<sub>n</sub></strong>. </>}<DiscCountText value={copy.boundName.slice(copy.boundName.indexOf('[[Tn]]') + '[[Tn]]'.length).replace(/^[。.]\s*/, '')} /></p>
           <div className="sequence-sum"><span>T<sub>n</sub> = <Sum /></span></div>
         </details>
         <details id="attain-bound" className={`reasoning-connection${highlightAttainment ? ' is-highlighted' : ''}`}><summary>{copy.attainTitle}</summary>
