@@ -5,6 +5,7 @@ import { appendixCopy } from './appendixCopy.js'
 import { shortestCopy } from './shortestCopy.js'
 import { ArrowIcon } from './icons.jsx'
 import { MiniTower } from './Tower.jsx'
+import { MathFormula } from './MathText.jsx'
 
 function Sum() {
   return <span>1 + 2 + ··· + <span style={{ whiteSpace: 'nowrap' }}>2<sup>n − 1</sup></span></span>
@@ -13,7 +14,7 @@ function Sum() {
 function DiscCountText({ value }) {
   return value.split(/(\[\[(?:[TG](?:1|n|next)|counts|nextCounts)\]\])/).map((part, index) => {
     if (part === '[[counts]]') return <strong key={index}>1, 2, 2<sup>2</sup>, …, <span className="proof-term">2<sup>n − 1</sup></span></strong>
-    if (part === '[[nextCounts]]') return <strong key={index}>1, 2 × 1, 2 × 2, 2 × 2<sup>2</sup>, …, 2 × <span className="proof-term">2<sup>n − 1</sup></span></strong>
+    if (part === '[[nextCounts]]') return <strong key={index}>1, 2 × 1, 2 × 2, 2 × 2<sup>2</sup>, …, <span className="proof-term">2 × 2<sup>n − 1</sup></span></strong>
     const match = part.match(/^\[\[([TG])(1|n|next)\]\]$/)
     if (match) return <span key={index} style={{ whiteSpace: 'nowrap' }}>{match[1]}<sub>{match[2] === 'next' ? 'n + 1' : match[2]}</sub></span>
     return part
@@ -90,9 +91,9 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
             </div>
             <div className="reasoning-fitch-result">
               <p>{locale === 'zh' ? '所以，对于这个 n，如果搬完 n 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'So, for this n, if moving n discs requires at least the following numbers of moves for the discs from largest to smallest:'}</p>
-              <div className="proof-count-formula"><span>1,</span> <span>2,</span> <span>2<sup>2</sup>,</span> <span>…,</span> <span>2<sup>n − 1</sup></span></div>
+              <div className="proof-count-formula">{['1,', '2,', '2^{2},', String.raw`\ldots,`, '2^{n-1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
               <p>{locale === 'zh' ? '那么搬完 n+1 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'then moving n + 1 discs requires at least the following numbers of moves for the discs from largest to smallest:'}</p>
-              <div className="proof-count-formula"><span>1,</span> <span>2<sup>0 + 1</sup>,</span> <span>2<sup>1 + 1</sup>,</span> <span>2<sup>2 + 1</sup>,</span> <span>…,</span> <span>2<sup>(n − 1) + 1</sup></span></div>
+              <div className="proof-count-formula">{['1,', '2^{0+1},', '2^{1+1},', '2^{2+1},', String.raw`\ldots,`, '2^{(n-1)+1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
             </div>
           </div>
           <p><DiscCountText value={copy.lowerBase} /></p>
