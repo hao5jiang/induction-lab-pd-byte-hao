@@ -103,7 +103,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
             <p>{routeCopy.routeIntro}</p>
             <ol>{routeCopy.routeSteps.map(step => <li key={step}>{step}</li>)}</ol>
           </section>
-          <p className="attainment-definition">{renderAttainment(copy.attainDefinition)}</p>
+          <p>{locale === 'zh' ? <>按这套搬法完成搬运，<strong className="attainment-term">搬完 n 个盘所用的步数</strong>记作 <strong className="attainment-term">G<sub>n</sub></strong>。</> : <>Denote <strong className="attainment-term">the number of moves this method uses to move n discs</strong> by <strong className="attainment-term">G<sub>n</sub></strong>.</>}</p>
           <p>{renderAttainment(copy.attainRecurrence)}</p>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.attainGeneral} /></p>
           <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><span>T<sub>n</sub> = G<sub>n</sub> = <Sum /></span></div></div>

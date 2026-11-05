@@ -3211,12 +3211,7 @@ html:lang(zh-CN) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK
 }
 .existence-method-note { margin: 24px 0; padding: 20px; border: 2px solid var(--amber); border-radius: 10px; background: rgba(242, 181, 68, .13); color: var(--amber-bright); font-size: clamp(19px, 1.8vw, 24px); line-height: 1.8; }
 .existence-guiding-questions .existence-general-question { color: var(--ink); font-weight: 700; font-size: clamp(20px, 2vw, 26px); line-height: 1.7; }
-.attainment-definition {
-  padding: 1rem 1.2rem;
-  border-left: 4px solid #147d78;
-  border-radius: 0.35rem;
-  background: #e8f6f3;
-  color: #123f3d;
-  font-size: 1.12em;
+.attainment-term {
+  color: #f6b84b;
   font-weight: 700;
 }
