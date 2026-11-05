@@ -15,7 +15,7 @@ function DiscCountText({ value }) {
   return value.split(/(\[\[(?:[TG](?:1|n|next)|counts|nextCounts)\]\])/).map((part, index) => {
     if (part === '[[counts]]' || part === '[[nextCounts]]') {
       const terms = part === '[[counts]]' ? ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}'] : ['1,', '2,', String.raw`2\cdot2,`, String.raw`2^2\cdot2,`, String.raw`\cdots,`, String.raw`2^{n-1}\cdot2`]
-      return <strong key={index}>{terms.map((tex, i) => <span className="proof-term" key={i} style={{ marginRight: i < terms.length - 1 ? '0.9em' : undefined }}><MathFormula tex={tex} /></span>)}</strong>
+      return <strong key={index}>{terms.map((tex, i) => <span className="proof-term" key={i}><MathFormula tex={tex.replace(/,$/, String.raw`\hspace{0.45em},\hspace{0.45em}`)} /></span>)}</strong>
     }
     const match = part.match(/^\[\[([TG])(1|n|next)\]\]$/)
     if (match) return <span key={index} className="proof-term"><MathFormula tex={`${match[1]}_{${match[2] === 'next' ? 'n+1' : match[2]}}`} /></span>
@@ -93,9 +93,9 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
             </div>
             <div className="reasoning-fitch-result">
               <p><DiscCountText value={locale === 'zh' ? '所以，对于这个 n，如果搬完 n 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'So, for this n, if moving n discs requires at least the following numbers of moves for the discs from largest to smallest:'} /></p>
-              <div className="proof-count-formula">{['1,', '2,', '2^{2},', String.raw`\ldots,`, '2^{n-1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
+              <div className="proof-count-formula">{['1,', '2,', '2^{2},', String.raw`\ldots,`, '2^{n-1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex.replace(/,$/, String.raw`\hspace{0.55em},\hspace{0.55em}`)} />)}</div>
               <p><DiscCountText value={locale === 'zh' ? '那么搬完 n+1 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'then moving n + 1 discs requires at least the following numbers of moves for the discs from largest to smallest:'} /></p>
-              <div className="proof-count-formula">{['1,', '2,', '2^2,', '2^3,', String.raw`\cdots,`, '2^{(n+1)-1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
+              <div className="proof-count-formula">{['1,', '2,', '2^2,', '2^3,', String.raw`\cdots,`, '2^{(n+1)-1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex.replace(/,$/, String.raw`\hspace{0.55em},\hspace{0.55em}`)} />)}</div>
             </div>
           </div>
           <p><DiscCountText value={copy.lowerBase} /></p>

@@ -48,7 +48,7 @@ const copy = {
 
 function Counts({ next = false }) {
   const terms = next ? ['1,', '2,', String.raw`2\cdot2,`, String.raw`2^2\cdot2,`, String.raw`\cdots,`, String.raw`2^{n-1}\cdot2`] : ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}']
-  return <strong>{terms.map((tex, i) => <span className="proof-term" key={i} style={{ marginRight: i < terms.length - 1 ? '0.9em' : undefined }}><MathFormula tex={tex} /></span>)}</strong>
+  return <strong>{terms.map((tex, i) => <span className="proof-term" key={i}><MathFormula tex={tex.replace(/,$/, String.raw`\hspace{0.45em},\hspace{0.45em}`)} /></span>)}</strong>
 }
 function Text({ value }) {
   return value.split(/(\[\[(?:counts|nextCounts)\]\])/).map((part, i) => part === '[[counts]]' || part === '[[nextCounts]]' ? <Counts key={i} next={part === '[[nextCounts]]'} /> : part)
@@ -77,7 +77,7 @@ export function CombinedProofScreen({ onBack, onRestart }) {
     </div>
     <p>{c.base}</p>
     <p className="appendix-conclusion"><Text value={c.conclusion} /></p>
-    <div className="sequence-sum"><Sum /><span className="appendix-qed" aria-label={c.end}>□</span></div>
+    <div className="sequence-sum appendix-proof-sum"><Sum /><span className="appendix-qed" aria-label={c.end}>□</span></div>
     <p>{c.name}</p>
     <div className="sequence-sum"><MathFormula tex={String.raw`T_1=1,\quad T_{n+1}=2T_n+1`} /></div>
     <p>{c.sum}</p>

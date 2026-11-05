@@ -272,6 +272,8 @@
 .reasoning-appendix .reasoning-fitch-outer h2 { margin: 16px 0; font-size: 23px; }
 .appendix-conclusion { margin: 30px 0 !important; padding: 0; color: var(--ink) !important; font-size: 19px !important; }
 .appendix-qed { display: inline-block; margin-left: .5em; color: var(--amber-bright); font-size: 23px; line-height: 1; vertical-align: baseline; }
+.appendix-proof-sum { position: relative; padding: 0 2em; }
+.appendix-proof-sum .appendix-qed { position: absolute; right: 0; bottom: 0; margin: 0; }
 .reasoning-appendix .appendix-page-link { color: inherit; text-decoration-line: underline; text-decoration-color: var(--blue); text-underline-offset: .16em; }
 .reasoning-appendix .appendix-page-link:hover { color: var(--blue); }
 .reasoning-appendix .appendix-page-link:focus-visible { outline: 2px solid var(--amber-bright); outline-offset: 3px; }
