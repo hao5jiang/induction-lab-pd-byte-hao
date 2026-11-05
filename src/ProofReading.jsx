@@ -104,7 +104,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
             <p>{routeCopy.routeIntro}</p>
             <ol>{routeCopy.routeSteps.map(step => <li key={step}>{step}</li>)}</ol>
           </section>
-          <p>{renderAttainment(copy.attainDefinition)}</p>
+          <p className="attainment-definition">{renderAttainment(copy.attainDefinition)}</p>
           <p>{renderAttainment(copy.attainRecurrence)}</p>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.attainGeneral} /></p>
           <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><span>T<sub>n</sub> = G<sub>n</sub> = <Sum /></span></div></div>
