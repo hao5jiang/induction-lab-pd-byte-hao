@@ -5,7 +5,7 @@ import { MathFormula, MathProse } from './MathText.jsx'
 
 const copy = {
   zh: {
-    eyebrow: '附录 2 · 逐盘证明最少步数',
+    eyebrow: '附录 · 逐盘证明最少步数',
     title: '搬完整座塔，最少需要多少步？',
     intro: '相比“说明理由”页，这里直接用“最少步数”来表述，更简洁。（相当于把“为什么不能更少”和“怎样恰好做到”合在一起证明。）',
     proof: '证明', assume: '假设：',
@@ -22,10 +22,10 @@ const copy = {
     conclusion: '因此，由数学归纳法，对于每个正整数 n，从大到小，每个盘最少分别需要移动 [[counts]] 次，并且有一条走法同时做到。总步数最少是：',
     name: '把这个最少步数记作 Tₙ。一个盘最少移动一次；多一个盘，就用最省步数的走法前后各搬一次小塔，再移动最大盘一次。这个搬运结构说明：',
     sum: '刚才按每个盘分别计数的证明，也说明了这个数列的通项为什么是下面的和式：',
-    back: '返回附录 1', restart: '重新体验', end: '证明完毕',
+    back: '返回说明理由', restart: '重新体验', end: '证明完毕',
   },
   en: {
-    eyebrow: 'APPENDIX 2 · THE MINIMUM, DISC BY DISC',
+    eyebrow: 'APPENDIX · THE MINIMUM, DISC BY DISC',
     title: 'What is the minimum number of moves for the whole tower?',
     intro: 'Compared with the PROVE page, this is a more concise formulation using “the minimum number of moves” directly. (Combine why fewer moves cannot work and how this minimum can be achieved in one proof.)',
     proof: 'Proof', assume: 'Assume:',
@@ -42,7 +42,7 @@ const copy = {
     conclusion: 'Therefore, by mathematical induction, for every positive integer n, the minimum counts from largest disc to smallest are [[counts]], and a route achieves them together. The minimum total is:',
     name: 'Call this minimum Tₙ. One disc needs one move. Adding a disc requires two shortest smaller-tower transfers and one move of the largest disc. This structure gives:',
     sum: 'Counting each disc separately also explains why the general term of this sequence is the following sum:',
-    back: 'Back to Appendix 1', restart: 'Restart experience', end: 'End of proof',
+    back: 'Back to PROVE', restart: 'Restart experience', end: 'End of proof',
   },
 }
 

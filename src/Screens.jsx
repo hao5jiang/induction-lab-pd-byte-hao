@@ -25,8 +25,9 @@ export function AppHeader({
   onTeacherLensChange,
   teacherLens,
 }) {
-  useLanguage()
-  const activeIndex = STAGES.findIndex(({ id }) => id === activeStage)
+  const language = useLanguage()
+  const visibleStages = STAGES.filter(({ id }) => id !== 'appendix')
+  const activeIndex = visibleStages.findIndex(({ id }) => id === activeStage)
   const navRef = useRef(null)
   useEffect(() => {
     navRef.current?.children[activeIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
@@ -44,8 +45,8 @@ export function AppHeader({
         <span>Mr Jiang Maths</span>
       </button>
 
-      <nav ref={navRef} className="stage-nav" style={{ '--stage-count': STAGES.length }} aria-label={t("Activity sequence")}>
-        {STAGES.map(({ id, label }, index) => (
+      <nav ref={navRef} className="stage-nav" style={{ '--stage-count': visibleStages.length }} aria-label={t("Activity sequence")}>
+        {visibleStages.map(({ id, label }, index) => (
           <button
             aria-current={activeStage === id ? 'step' : undefined}
             className={`${activeStage === id ? 'is-active' : ''} ${index < activeIndex ? 'is-complete' : ''}`}
@@ -55,7 +56,7 @@ export function AppHeader({
             onClick={() => onStageChange(id)}
             type="button"
           >
-            <span className="nav-label">{t(label)}</span>
+            <span className="nav-label">{id === 'appendix2' ? (language === 'zh' ? '附录' : 'APPENDIX') : t(label)}</span>
             <span className="nav-node" aria-hidden="true" />
           </button>
         ))}
@@ -321,21 +322,12 @@ function ProofStage({ label, math, number, stage }) {
   )
 }
 
-export function ProveScreen({ answer, onAnswer, onBack, onNext, onOpenAppendix, teacherLens, nextUnlocked = true, gateMessage = '' }) {
+export function ProveScreen({ answer, onAnswer, onBack, onNext, teacherLens, nextUnlocked = true, gateMessage = '' }) {
   const locale = useLanguage()
   const copy = shortestCopy[locale]
   const [selection, setSelection] = useState(answer)
   const submitted = selection != null && selection === answer
   const correct = submitted && answer === 'all'
-  const appendixUrl = new URL(window.location.href)
-  appendixUrl.searchParams.set('stage', 'appendix')
-  const appendixHref = `${appendixUrl.pathname}${appendixUrl.search}`
-  const openAppendix = (event) => {
-    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
-    event.preventDefault()
-    if (correct && nextUnlocked) onOpenAppendix()
-  }
-
   return (
     <section className="shortest-screen">
       <header className="shortest-heading">
@@ -374,11 +366,6 @@ export function ProveScreen({ answer, onAnswer, onBack, onNext, onOpenAppendix, 
         </details>
         <LowerBoundLadder compact />
         <p className="shortest-closing-question">{copy.closingQuestion}</p>
-        <p className="shortest-appendix-link">{correct && nextUnlocked
-          ? <a href={appendixHref} onClick={openAppendix}>{copy.appendixLink}</a>
-          : <span role="link" aria-disabled="true">{copy.appendixLink}</span>}
-          {(!correct || !nextUnlocked) && <small>{!nextUnlocked ? copy.appendixLocked : copy.answerFirst}</small>}
-        </p>
         {teacherLens && (
           <LensNote time={copy.teacherLabel}>{copy.teacher}</LensNote>
         )}

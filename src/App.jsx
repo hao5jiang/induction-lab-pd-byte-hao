@@ -270,7 +270,6 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
             onAnswer={setProveAnswer}
             onBack={() => changeStage('existence')}
             onNext={() => changeStage('steps')}
-            onOpenAppendix={() => changeStage('appendix')}
             teacherLens={presenterMode}
             nextUnlocked={!stageLocks.steps}
             gateMessage={stageLocks.steps}
@@ -282,7 +281,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         )}
 
         {activeStage === 'debrief' && (
-          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={() => changeStage('appendix')} onOpenExistence={() => changeStage('existence')} />
+          <MinimumProofScreen teacherLens={presenterMode} onBack={() => changeStage('steps')} onNext={() => changeStage('appendix2')} onOpenExistence={() => changeStage('existence')} />
         )}
 
         {activeStage === 'appendix' && (
@@ -290,7 +289,7 @@ export default function App({ classroom = null, onLeaveClass = null, onOpenClass
         )}
 
         {activeStage === 'appendix2' && (
-          <CombinedProofScreen onBack={() => changeStage('appendix')} onRestart={restartExperience} />
+          <CombinedProofScreen onBack={() => changeStage('debrief')} onRestart={restartExperience} />
         )}
       </main>
       <p className="sr-only" aria-live="polite">{t(message)}</p>
