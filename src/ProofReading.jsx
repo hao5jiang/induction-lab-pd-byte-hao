@@ -95,7 +95,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
               <p><DiscCountText value={locale === 'zh' ? '所以，对于这个 n，如果搬完 n 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'So, for this n, if moving n discs requires at least the following numbers of moves for the discs from largest to smallest:'} /></p>
               <div className="proof-count-formula">{['1,', '2,', '2^{2},', String.raw`\ldots,`, '2^{n-1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
               <p><DiscCountText value={locale === 'zh' ? '那么搬完 n+1 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'then moving n + 1 discs requires at least the following numbers of moves for the discs from largest to smallest:'} /></p>
-              <div className="proof-count-formula">{['1,', '2^{0+1},', '2^{1+1},', '2^{2+1},', String.raw`\ldots,`, '2^{(n-1)+1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
+              <div className="proof-count-formula">{['1,', '2^{0+1},', '2^{1+1},', '2^{2+1},', String.raw`\ldots,`, '2^{n+1-1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
             </div>
           </div>
           <p><DiscCountText value={copy.lowerBase} /></p>
