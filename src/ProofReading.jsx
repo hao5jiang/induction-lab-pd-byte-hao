@@ -86,7 +86,6 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
             <div className="reasoning-fitch-inner">
               <p><strong className="reasoning-fitch-assume">{copy.assumeLead}{copy.assumeColon}</strong> <DiscCountText value={copy.assumption} /></p>
               {copy.lowerSteps.map((step, index) => <p key={index}><DiscCountText value={step} /></p>)}
-              <details><summary>{copy.bridgeTitle}</summary><p>{copy.bridge}</p></details>
               <p><DiscCountText value={copy.innerConclusion} /></p>
             </div>
             <p className="reasoning-fitch-result"><DiscCountText value={copy.scopeConclusion} /></p>

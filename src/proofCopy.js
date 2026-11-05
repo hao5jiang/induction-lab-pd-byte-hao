@@ -16,8 +16,6 @@ export const proofCopy = {
       "eyebrow": "不能更少 · 确实做得到",
       "title": "这套走法为什么最省步数？",
       "intro": "要证明步数最少，得回答两件事：为什么不能更少？有没有走法恰好达到这个下界？",
-      "bridgeTitle": "为什么换一种走法也省不掉这些次数？",
-      "bridge": "这里看的是最大盘第一次移动前和最后一次到达目标柱后，不要求它中途怎样走。这两段完整的小塔搬运始终存在。只看小盘的移动，仍是一道把完整小塔搬到另一根柱上的汉诺塔问题；柱子的名字和底下的大盘都没有改变规则。",
       "start": "一个碟子要换到另一根柱上，至少得移动一步。这是我们已经确定的起点。",
       "connect": "为什么不能更少？",
       "let": "设 n 是一个正整数。",
@@ -35,7 +33,7 @@ export const proofCopy = {
       "lowerBase": "只有一个盘时，要从一根柱搬到另一根柱，至少得移动一次。",
       "lowerSteps": [
         "现在考虑 n+1 个盘。最大盘第一次移动前，它上面的小盘必须全部移开，接收最大盘的柱子也必须空着。因此，这 n 个小盘已经从起始柱完整搬到了另一根柱上。",
-        "再看最大盘最后一次到达目标柱的那一步：小盘不能在最大盘上，也不能在目标柱上，只能完整叠在第三根柱上。接下来，它们还必须完整搬到目标柱，任务才算完成。",
+        "再看最大盘移动到目标柱上的那一步：小盘不能在最大盘上，也不能在目标柱上，只能完整叠在第三根柱上。接下来，它们还必须完整搬到目标柱，任务才算完成。",
         "同一座 n 盘小塔前后各搬一次，因此每个小盘至少要移动的次数都翻倍。最大盘本身至少移动一次。"
       ],
       "attainDefinition": "按这套搬法完成搬运，搬完 n 个盘所用的步数记作 [[Gn]]。",
@@ -59,8 +57,6 @@ export const proofCopy = {
       "eyebrow": "LOWER BOUND · ACHIEVING IT",
       "title": "Why is this method shortest?",
       "intro": "To prove a move count is minimal, we need both parts: why fewer moves are impossible, and whether a route achieves that bound.",
-      "bridgeTitle": "Why can a different route not avoid these counts?",
-      "bridge": "The argument uses the largest disc’s first move and its final arrival at the target, whatever happens between them. Both complete smaller-tower transfers remain necessary. Looking only at the smaller discs gives the same Tower of Hanoi problem; renaming pegs and leaving a larger disc underneath do not change its rules.",
       "start": "One disc needs at least one move to reach a different peg. This is our established starting point.",
       "connect": "Why can no route use fewer moves?",
       "let": "Let n be a positive integer.",
@@ -78,7 +74,7 @@ export const proofCopy = {
       "lowerBase": "One disc needs at least one move to reach another peg.",
       "lowerSteps": [
         "Consider n + 1 discs. Before the largest disc first moves, every smaller disc must leave it, and the receiving peg must be empty. The n smaller discs have therefore already been transferred as a complete tower to another peg.",
-        "Now consider the largest disc’s final arrival at the target. The smaller discs can be neither on it nor on the target peg. They must be stacked on the third peg, and must still be transferred completely to the target to finish.",
+        "Now consider a move of the largest disc onto the target peg. The smaller discs can be neither on it nor on the target peg. They must be stacked on the third peg, and must still be transferred completely to the target to finish.",
         "The same n-disc tower is transferred once before and once after, so each smaller disc’s lower bound doubles. The largest disc itself moves at least once."
       ],
       "attainDefinition": "Denote the number of moves this method uses to move n discs by [[Gn]].",
