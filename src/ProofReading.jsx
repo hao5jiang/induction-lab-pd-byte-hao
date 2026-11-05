@@ -14,7 +14,7 @@ function Sum() {
 function DiscCountText({ value }) {
   return value.split(/(\[\[(?:[TG](?:1|n|next)|counts|nextCounts)\]\])/).map((part, index) => {
     if (part === '[[counts]]' || part === '[[nextCounts]]') {
-      const terms = part === '[[counts]]' ? ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}'] : ['1,', String.raw`2\times1,`, String.raw`2\times2,`, String.raw`2\times2^2,`, String.raw`\ldots,`, String.raw`2\times2^{n-1}`]
+      const terms = part === '[[counts]]' ? ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}'] : ['1,', String.raw`2\cdot1,`, String.raw`2\cdot2,`, String.raw`2\cdot2^2,`, String.raw`\cdots,`, String.raw`2\cdot2^{n-1}`]
       return <strong key={index}>{terms.map((tex, i) => <span className="proof-term" key={i}><MathFormula tex={tex} />{i < terms.length - 1 ? ' ' : ''}</span>)}</strong>
     }
     const match = part.match(/^\[\[([TG])(1|n|next)\]\]$/)
@@ -101,7 +101,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
           <p><DiscCountText value={copy.lowerBase} /></p>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.general} /></p>
           <div className="sequence-sum"><Sum /></div>
-          <p>{locale === 'zh' ? <>把<strong className="attainment-term">这个步数下界</strong>记作 <strong className="attainment-term">T<sub>n</sub></strong>。</> : <>Call <strong className="attainment-term">this move lower bound</strong> <strong className="attainment-term">T<sub>n</sub></strong>. </>}<DiscCountText value={copy.boundName.slice(copy.boundName.indexOf('[[Tn]]') + '[[Tn]]'.length).replace(/^[。.]\s*/, '')} /></p>
+          <p>{locale === 'zh' ? <>把<strong className="attainment-term">这个步数下界</strong>记作 <strong className="attainment-term"><MathFormula tex="T_n" /></strong>。</> : <>Call <strong className="attainment-term">this move lower bound</strong> <strong className="attainment-term"><MathFormula tex="T_n" /></strong>. </>}<DiscCountText value={copy.boundName.slice(copy.boundName.indexOf('[[Tn]]') + '[[Tn]]'.length).replace(/^[。.]\s*/, '')} /></p>
           <div className="sequence-sum"><MathFormula tex={String.raw`T_n = 1 + 2 + \cdots + 2^{n-1}`} /></div>
         </details>
         <details id="attain-bound" className={`reasoning-connection${highlightAttainment ? ' is-highlighted' : ''}`}><summary>{copy.attainTitle}</summary>
@@ -111,7 +111,7 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
             <p>{routeCopy.routeIntro}</p>
             <ol>{routeCopy.routeSteps.map(step => <li key={step}>{step}</li>)}</ol>
           </section>
-          <p>{locale === 'zh' ? <>按这套搬法完成搬运，<strong className="attainment-term">搬完 n 个盘所用的步数</strong>记作 <strong className="attainment-term">G<sub>n</sub></strong>。</> : <>Denote <strong className="attainment-term">the number of moves this method uses to move n discs</strong> by <strong className="attainment-term">G<sub>n</sub></strong>.</>}</p>
+          <p>{locale === 'zh' ? <>按这套搬法完成搬运，<strong className="attainment-term">搬完 <MathFormula tex="n" /> 个盘所用的步数</strong>记作 <strong className="attainment-term"><MathFormula tex="G_n" /></strong>。</> : <>Denote <strong className="attainment-term">the number of moves this method uses to move <MathFormula tex="n" /> discs</strong> by <strong className="attainment-term"><MathFormula tex="G_n" /></strong>.</>}</p>
           <p>{renderAttainment(copy.attainRecurrence)}</p>
           <p className="reasoning-fitch-universal"><DiscCountText value={copy.attainGeneral} /></p>
           <div className="sequence-final-result"><strong>{copy.doneTitle}</strong><p><DiscCountText value={copy.done} /></p><div className="sequence-sum"><MathFormula tex={String.raw`T_n = G_n = 1 + 2 + \cdots + 2^{n-1}`} /></div></div>

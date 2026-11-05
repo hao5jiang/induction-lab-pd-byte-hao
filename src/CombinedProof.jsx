@@ -47,7 +47,7 @@ const copy = {
 }
 
 function Counts({ next = false }) {
-  const terms = next ? ['1,', String.raw`2\times1,`, String.raw`2\times2,`, String.raw`2\times2^2,`, String.raw`\ldots,`, String.raw`2\times2^{n-1}`] : ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}']
+  const terms = next ? ['1,', String.raw`2\cdot1,`, String.raw`2\cdot2,`, String.raw`2\cdot2^2,`, String.raw`\cdots,`, String.raw`2\cdot2^{n-1}`] : ['1,', '2,', '2^2,', String.raw`\ldots,`, '2^{n-1}']
   return <strong>{terms.map((tex, i) => <span className="proof-term" key={i}><MathFormula tex={tex} />{i < terms.length - 1 ? ' ' : ''}</span>)}</strong>
 }
 function Text({ value }) {
