@@ -1,7 +1,7 @@
 import { useLanguage } from './Language.jsx'
 import { ArrowIcon, ResetIcon } from './icons.jsx'
 import { proofCopy } from './proofCopy.js'
-import { MathFormula } from './MathText.jsx'
+import { MathFormula, MathProse } from './MathText.jsx'
 
 const copy = {
   zh: {
@@ -64,7 +64,7 @@ export function CombinedProofScreen({ onBack, onRestart }) {
     <header className="sequence-heading"><span className="sequence-eyebrow">{c.eyebrow}</span><h1>{c.title}</h1><p>{c.intro}</p></header>
     <h2 className="appendix-proof-label">{c.proof}</h2>
     <div className="reasoning-fitch-outer">
-      <h2>{lower.let}</h2>
+      <h2><MathProse>{lower.let}</MathProse></h2>
       <div className="reasoning-fitch-inner">
         <p><strong className="reasoning-fitch-assume">{c.assume}</strong> <Text value={c.assumption} /></p>
         {lower.lowerSteps.slice(0, 2).map(step => <p key={step}>{step}</p>)}

@@ -85,16 +85,16 @@ export function MinimumProofScreen({ teacherLens, onBack, onNext, onOpenExistenc
     <div id="reasoning-lower" hidden={recalling}>
         <details className="reasoning-connection"><summary>{copy.connect}</summary>
           <div className="reasoning-fitch-outer">
-            <p>{copy.let}</p>
+            <p><DiscCountText value={copy.let} /></p>
             <div className="reasoning-fitch-inner">
               <p><strong className="reasoning-fitch-assume">{copy.assumeLead}{copy.assumeColon}</strong> <DiscCountText value={copy.assumption} /></p>
               {copy.lowerSteps.map((step, index) => <p key={index}><DiscCountText value={step} /></p>)}
-              <p>{locale === 'zh' ? <>这样，搬完 n+1 个盘时，<br />每个盘从大到小分别至少要移动 <DiscCountText value="[[nextCounts]]" /> 次。</> : <DiscCountText value={copy.innerConclusion} />}</p>
+              <p>{locale === 'zh' ? <>这样，搬完 <MathFormula tex="n+1" /> 个盘时，<br />每个盘从大到小分别至少要移动 <DiscCountText value="[[nextCounts]]" /> 次。</> : <DiscCountText value={copy.innerConclusion} />}</p>
             </div>
             <div className="reasoning-fitch-result">
-              <p>{locale === 'zh' ? '所以，对于这个 n，如果搬完 n 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'So, for this n, if moving n discs requires at least the following numbers of moves for the discs from largest to smallest:'}</p>
+              <p><DiscCountText value={locale === 'zh' ? '所以，对于这个 n，如果搬完 n 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'So, for this n, if moving n discs requires at least the following numbers of moves for the discs from largest to smallest:'} /></p>
               <div className="proof-count-formula">{['1,', '2,', '2^{2},', String.raw`\ldots,`, '2^{n-1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
-              <p>{locale === 'zh' ? '那么搬完 n+1 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'then moving n + 1 discs requires at least the following numbers of moves for the discs from largest to smallest:'}</p>
+              <p><DiscCountText value={locale === 'zh' ? '那么搬完 n+1 个盘时，从大到小，每个盘最少需要移动的步数分别不低于：' : 'then moving n + 1 discs requires at least the following numbers of moves for the discs from largest to smallest:'} /></p>
               <div className="proof-count-formula">{['1,', '2^{0+1},', '2^{1+1},', '2^{2+1},', String.raw`\ldots,`, '2^{(n-1)+1}'].map((tex, index) => <MathFormula key={index} tex={String.raw`\displaystyle ` + tex} />)}</div>
             </div>
           </div>
@@ -153,7 +153,7 @@ export function AppendixProofScreen({ onBack, onNext, onOpenQuestion }) {
     <h2 className="appendix-proof-label">{copy.proofLabel}</h2>
     <p className="appendix-base">{copy.base}</p>
     <div className="reasoning-fitch-outer">
-      <h2>{copy.let}</h2>
+      <h2><DiscCountText value={copy.let} /></h2>
       <div className="reasoning-fitch-inner">
         <p><strong className="reasoning-fitch-assume">{copy.assumptionLead}</strong> {copy.assumption}</p>
         <p>{copy.extension}</p>
