@@ -3220,7 +3220,7 @@ html:lang(zh-CN) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.35em;
+  gap: 0.65em;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.1em;
   font-weight: 700;
