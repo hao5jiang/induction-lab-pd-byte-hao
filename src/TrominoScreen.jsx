@@ -259,8 +259,7 @@ export function TrominoActivity() {
                 待证命题：
               </strong>
               <p style={{ margin: 0, fontSize: '15px' }}>
-                对于每个正整数 <MathFormula tex={String.raw`n \ge 1`} /> 和每个缺失格位置，<MathFormula tex={String.raw`2^n \times 2^n`} /> 棋盘中，
-                剩余的 <MathFormula tex="2^{2n} - 1" /> 个格子均可用 L 型骨牌无重叠完全覆盖。
+                任何大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的棋盘，随便挖掉哪一个格子，剩下的部分都能用 L 型骨牌正好铺满。
               </p>
             </div>
 
@@ -268,8 +267,7 @@ export function TrominoActivity() {
               <span className="mj-kicker">BASE CASE</span>
               <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>先看 <MathFormula tex={String.raw`2\times2`} /> 棋盘</h3>
               <p>
-                棋盘共有 <MathFormula tex={String.raw`2 \times 2 = 4`} /> 个格子。无论缺失格位于哪里，剩余 3 个格子恰好构成一个 L 型骨牌的形状。
-                因此该情形显然成立。
+                棋盘一共有 <MathFormula tex={String.raw`2 \times 2 = 4`} /> 个格子。随便挖掉哪一个，剩下的 3 个格子本身就是一块 L 型骨牌，显然成立。
               </p>
             </div>
 
@@ -277,35 +275,33 @@ export function TrominoActivity() {
               <span className="mj-kicker">STEP CASE</span>
               <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>设 <MathFormula tex="n" /> 是正整数</h3>
               <p>
-                假设：对于每个缺失格位置，<MathFormula tex={String.raw`2^n \times 2^n`} /> 棋盘都可用 L 型骨牌完全铺满。
+                假设：任意大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的棋盘，随便拿掉一个格子都能用 L 型骨牌铺满。
               </p>
               <p>
-                用较小棋盘的结论构造更大的棋盘：考虑大小为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的棋盘，其中有一个缺失格。
+                用较小棋盘构造更大棋盘：考虑大小为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的大棋盘，其中有一个缺失格。
               </p>
               <ol style={{ paddingLeft: '20px', lineHeight: 1.8 }}>
                 <li>
-                  将棋盘用十字平分为 <strong>4 个大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的子棋盘</strong>。
+                  把大棋盘切成 <strong>4 个大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的子棋盘</strong>。
                 </li>
                 <li>
-                  原来的缺失格必然落在其中<strong>某一个</strong>子棋盘中。
+                  原来的缺失格必然落在其中<strong>某一个</strong>子棋盘里。
                 </li>
                 <li>
-                  <strong>核心关键步：</strong>在另外 3 个没有缺格的子棋盘在中心交界汇合处的 3 个角格上，
-                  <strong>放置 1 块 L 型骨牌</strong>！
+                  <strong>关键一步：</strong>在中心交界处，给另外 3 个完整的子棋盘各占一个角格，<strong>放上 1 块 L 型骨牌</strong>！
                 </li>
                 <li>
-                  这样一来，这 3 个原本完整的子棋盘，中心各被这块 L 型骨牌占用了一个角格，
-                  <strong>都转化为“含有一个缺格的 <MathFormula tex={String.raw`2^n \times 2^n`} /> 子棋盘”</strong>。
+                  这样一来，这 3 个原本完整的子棋盘，中心各少了一个角，<strong>全变成了“缺 1 个格子的 <MathFormula tex={String.raw`2^n \times 2^n`} /> 子棋盘”</strong>。
                 </li>
                 <li>
-                  由归纳假设，全部 4 个子棋盘都可以被 L 型骨牌完美覆盖。
+                  根据归纳假设，这 4 个子棋盘全部都能用 L 型骨牌正好铺满！
                 </li>
               </ol>
               <div className="mj-formula" style={{ margin: '14px 0' }}>
                 <MathFormula display tex={String.raw`\text{总骨牌数} = 1 + 4 \times \frac{2^{2n}-1}{3} = \frac{2^{2(n+1)}-1}{3}`} />
               </div>
               <p>
-                因此，较小棋盘的结论推出更大棋盘的结论。由数学归纳法，对于每个正整数 <MathFormula tex="n" />，命题都成立。
+                所以，只要较小棋盘能铺满，更大棋盘也一定能铺满。由数学归纳法，这个结论对所有正整数 <MathFormula tex="n" /> 都成立。
               </p>
             </div>
           </section>
