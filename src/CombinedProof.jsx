@@ -67,9 +67,9 @@ export function CombinedProofScreen({ onBack, onRestart }) {
       <h2><MathProse>{lower.let}</MathProse></h2>
       <div className="reasoning-fitch-inner">
         <p><strong className="reasoning-fitch-assume">{c.assume}</strong> <Text value={c.assumption} /></p>
-        {lower.lowerSteps.slice(0, 2).map(step => <p key={step}>{step}</p>)}
-        <p>{c.double}</p>
-        <p>{c.construct}</p>
+        {lower.lowerSteps.slice(0, 2).map(step => <p key={step}><MathProse>{step}</MathProse></p>)}
+        <p><MathProse>{c.double}</MathProse></p>
+        <p><MathProse>{c.construct}</MathProse></p>
         <details><summary>{c.roles}</summary><p>{c.rolesText}</p></details>
         <p><strong className="reasoning-fitch-assume">{c.thus}</strong><Text value={c.result} /></p>
       </div>

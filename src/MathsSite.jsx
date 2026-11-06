@@ -137,7 +137,8 @@ function CorrectedClaim() {
 }
 export default function MathsSite() {
   const params = new URLSearchParams(window.location.search)
-  const role = params.get('role') || 'teacher'
+  // Students get the default site; the teacher site (with the standalone activity) needs ?role=teacher.
+  const role = params.get('role') === 'teacher' ? 'teacher' : 'student'
   const isStudent = role === 'student'
   const topic = params.get('topic') || (window.__MR_JIANG_OFFLINE_DERIVATIVES__ ? 'derivatives' : null)
   const legacy = ['join','teacher','classroom','stage','code'].some(key=>params.has(key)) || /access_token|type=recovery|code=/.test(window.location.hash)
@@ -160,7 +161,7 @@ export default function MathsSite() {
   },[topic,legacy,isStudent])
   if (!topic && (params.has('join') || params.has('teacher') || params.has('classroom'))) return <Classroom />
   if(topic==='induction' || (!topic && legacy)) {
-    if (isStudent && !params.has('stage')) {
+    if (isStudent) {
       return (
         <div className="mj-site">
           <div className="mj-topbar">
@@ -179,7 +180,7 @@ export default function MathsSite() {
   }
   if(topic==='tromino') return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('', role)}>Mr Jiang<span>Maths</span></a><div style={{ display: 'flex', gap: '16px' }}><a href={siteUrl('induction', role)}>Hanoi Tower ↗</a><a href={siteUrl('derivatives', role)}>Derivatives ↗</a></div></div><main className="mj-lesson"><TrominoActivity /></main></div>
   if(topic==='derivatives') return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('', role)}>Mr Jiang<span>Maths</span></a>{window.__MR_JIANG_OFFLINE_DERIVATIVES__ ? <span>Offline student copy</span> : <a href={siteUrl('induction', role)}>Mathematical induction ↗</a>}</div><main className="mj-lesson"><nav className="mj-tabs" aria-label="Derivative activities">{sections.map((name,i)=><button key={name} aria-current={i===page?'step':undefined} disabled={(i>1 && !constantPassed) || (i>2 && !selfDerivativeFinished) || (i>3 && !proofFinished) || (i===5 && !gapSeen)} onClick={()=>{setPage(i);window.scrollTo(0,0)}}><span>0{i+1}</span><MathText>{name}</MathText></button>)}</nav>{[<ValueActivity />,<ConstantActivity onAnswerStatusChange={setConstantPassed} />,<SelfDerivative onReachedFinalStep={()=>setSelfDerivativeFinished(true)} />,<ProofActivity onReachedFinalStep={()=>setProofFinished(true)} />,<DomainActivity onFoundGap={()=>setGapSeen(true)} />,<CorrectedClaim />].map((element,i)=><div key={i} hidden={i!==page}>{element}</div>)}<footer className="mj-footer"><button className="mj-button secondary" disabled={page===0} onClick={()=>{setPage(page-1);window.scrollTo(0,0)}}>← Back</button><span>{page+1} / 6</span><button className="mj-button" disabled={page===5 || (page===1 && !constantPassed) || (page===2 && !selfDerivativeFinished) || (page===3 && !proofFinished) || (page===4 && !gapSeen)} onClick={()=>{setPage(page+1);window.scrollTo(0,0)}}>Continue →</button></footer></main></div>
-  return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('', role)}>Mr Jiang<span>Maths</span></a><div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span className={`mj-role-badge ${isStudent ? 'student' : 'teacher'}`}>{isStudent ? '学生版 · Student' : '教师版 · Teacher'}</span><a className="mj-switch-role" href={siteUrl('', isStudent ? 'teacher' : 'student')}>{isStudent ? '切换至教师端 ↗' : '切换至学生端 ↗'}</a></div></div><main className="mj-home"><header><span className="mj-kicker">{isStudent ? 'STUDENT LEARNING PORTAL · 学生探索' : 'TEACHER & PRESENTATION PORTAL · 教学与演示'}</span><h1><MathText>{isStudent ? 'Explore, Question & Learn' : 'Explore the idea.<br /><em>Explain the reasoning.</em>'}</MathText></h1><p><MathText>{isStudent ? '随时加入课堂互动，体验汉诺塔归纳推导与棋盘问题。' : 'Interactive mathematics with room to try, question and prove.'}</MathText></p></header>
+  return <div className="mj-site"><div className="mj-topbar"><a className="mj-brand" href={siteUrl('', role)}>Mr Jiang<span>Maths</span></a><div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span className={`mj-role-badge ${isStudent ? 'student' : 'teacher'}`}>{isStudent ? '学生版 · Student' : '教师版 · Teacher'}</span>{!isStudent && <a className="mj-switch-role" href={siteUrl('', 'student')}>预览学生端 ↗</a>}</div></div><main className="mj-home"><header><span className="mj-kicker">{isStudent ? 'STUDENT LEARNING PORTAL · 学生探索' : 'TEACHER & PRESENTATION PORTAL · 教学与演示'}</span><h1><MathText>{isStudent ? 'Explore, Question & Learn' : 'Explore the idea.<br /><em>Explain the reasoning.</em>'}</MathText></h1><p><MathText>{isStudent ? '随时加入课堂互动，体验汉诺塔归纳推导与棋盘问题。' : 'Interactive mathematics with room to try, question and prove.'}</MathText></p></header>
 
     <section className="mj-category-section">
       <div className="mj-category-header">
@@ -215,7 +216,7 @@ export default function MathsSite() {
             <span style={{ background: '#7a5195' }} />
           </div>
           <h2><MathText>Deficient Board · 残缺棋盘</MathText></h2>
-          <p><MathText>Tiling a 2^n \times 2^n board missing one square with L-trominoes. Experience constructive induction.</MathText></p>
+          <p>Tiling a <MathFormula tex={String.raw`2^n \times 2^n`} /> board missing one square with L-trominoes. Experience constructive induction.</p>
           <strong>Explore tromino tiling <span>↗</span></strong>
         </a>
       </div>

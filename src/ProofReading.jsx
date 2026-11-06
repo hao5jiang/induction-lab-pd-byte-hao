@@ -155,12 +155,12 @@ export function AppendixProofScreen({ onBack, onNext, onOpenQuestion }) {
     <div className="reasoning-fitch-outer">
       <h2><DiscCountText value={copy.let} /></h2>
       <div className="reasoning-fitch-inner">
-        <p><strong className="reasoning-fitch-assume">{copy.assumptionLead}</strong> {copy.assumption}</p>
+        <p><strong className="reasoning-fitch-assume">{copy.assumptionLead}</strong> <DiscCountText value={copy.assumption} /></p>
         <p>{copy.extension}</p>
-        <ol>{copy.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+        <ol>{copy.steps.map((step) => <li key={step}><DiscCountText value={step} /></li>)}</ol>
         <p><strong className="reasoning-fitch-assume">{copy.resultLead}</strong><LinkedFourthText value={copy.result} href={fourthHref} label={copy.shortestPageLabel} onOpen={openFourth} /></p>
       </div>
-      <p className="reasoning-fitch-result"><strong>{copy.implicationLead}</strong>{copy.implication}</p>
+      <p className="reasoning-fitch-result"><strong>{copy.implicationLead}</strong><DiscCountText value={copy.implication} /></p>
     </div>
     <p className="appendix-conclusion"><LinkedFourthText value={copy.conclusion} href={fourthHref} label={copy.shortestPageLabel} onOpen={openFourth} /><span className="appendix-qed" aria-label={copy.proofEnd}>□</span></p>
     <footer className="sequence-footer">
