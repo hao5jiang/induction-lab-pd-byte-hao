@@ -3,7 +3,7 @@ import { solveTromino, getTileColor } from './trominoMath.js'
 import { MathFormula, MathText } from './MathText.jsx'
 import './tromino.css'
 
-export function TrominoBoard({ k = 2, missR = 0, missC = 0, currentStep = -1, onSelectMiss = null }) {
+export function TrominoBoard({ k = 2, missR = 0, missC = 0, currentStep = -1, onSelectMiss = null, manualTiles = null, selected = [], onSelectCell = null }) {
   const size = 1 << k
   const solution = solveTromino(k, missR, missC)
   const { grid, steps } = solution
@@ -29,24 +29,29 @@ export function TrominoBoard({ k = 2, missR = 0, missC = 0, currentStep = -1, on
         {Array.from({ length: size }).map((_, r) =>
           Array.from({ length: size }).map((_, c) => {
             const isMissing = r === missR && c === missC
-            const tileId = grid[r][c]
-            const isTiled = !isMissing && tileId > 0 && visibleTileIds.has(tileId)
+            const manualIndex = manualTiles?.findIndex(tile => tile.some(([row, col]) => row === r && col === c)) ?? -1
+            const tileId = manualTiles ? manualIndex + 1 : grid[r][c]
+            const isTiled = !isMissing && tileId > 0 && (manualTiles ? true : visibleTileIds.has(tileId))
             const isCurrent = tileId === currentStepTileId
 
             return (
-              <div
+              <button
+                type="button"
                 key={`${r}-${c}`}
-                className={`tromino-cell ${isMissing ? 'missing' : ''} ${isTiled ? 'tiled' : 'empty'} ${isCurrent ? 'highlight-step' : ''}`}
+                className={`tromino-cell ${isMissing ? 'missing' : ''} ${isTiled ? 'tiled' : 'empty'} ${isCurrent || selected.some(([row, col]) => row === r && col === c) ? 'highlight-step' : ''}`}
                 style={{
                   backgroundColor: isMissing ? undefined : (isTiled ? getTileColor(tileId) : undefined)
                 }}
-                title={isMissing ? `缺失方格 (${r+1}, ${c+1})` : (isTiled ? `L型骨牌 #${tileId}` : `点击设为缺失方格 (${r+1}, ${c+1})`)}
+                title={isMissing ? `缺失方格 (${r+1}, ${c+1})` : (isTiled ? `L型骨牌 #${tileId}` : manualTiles ? `选择方格 (${r+1}, ${c+1})` : `点击设为缺失方格 (${r+1}, ${c+1})`)}
+                aria-label={isMissing ? `缺失方格，第 ${r + 1} 行，第 ${c + 1} 列` : `第 ${r + 1} 行，第 ${c + 1} 列${isTiled ? '，已铺放' : ''}`}
+                aria-pressed={manualTiles ? selected.some(([row, col]) => row === r && col === c) : undefined}
                 onClick={() => {
-                  if (onSelectMiss) onSelectMiss(r, c)
+                  if (onSelectCell) onSelectCell(r, c)
+                  else if (onSelectMiss) onSelectMiss(r, c)
                 }}
               >
                 {isTiled ? tileId : ''}
-              </div>
+              </button>
             )
           })
         )}
@@ -61,6 +66,10 @@ export function TrominoActivity() {
   const [missC, setMissC] = useState(2)
   const [stepIndex, setStepIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [manual, setManual] = useState(false)
+  const [manualTiles, setManualTiles] = useState([])
+  const [selected, setSelected] = useState([])
+  const [manualMessage, setManualMessage] = useState('')
 
   const size = 1 << k
   const totalCells = size * size
@@ -71,6 +80,9 @@ export function TrominoActivity() {
   useEffect(() => {
     setStepIndex(0)
     setIsPlaying(false)
+    setManualTiles([])
+    setSelected([])
+    setManualMessage('')
   }, [k, missR, missC])
 
   // Animation player
@@ -91,6 +103,22 @@ export function TrominoActivity() {
     setMissC(c)
   }
 
+  const handleManualCell = (r, c) => {
+    if ((r === missR && c === missC) || manualTiles.some(tile => tile.some(([row, col]) => row === r && col === c))) return
+    if (selected.some(([row, col]) => row === r && col === c)) {
+      setSelected(selected.filter(([row, col]) => row !== r || col !== c))
+      return
+    }
+    const next = [...selected, [r, c]]
+    if (next.length < 3) { setSelected(next); setManualMessage(''); return }
+    const rows = next.map(([row]) => row), cols = next.map(([, col]) => col)
+    if (Math.max(...rows) - Math.min(...rows) !== 1 || Math.max(...cols) - Math.min(...cols) !== 1) {
+      setSelected([]); setManualMessage('请选择相邻的三个格子，组成 L 形。'); return
+    }
+    setManualTiles([...manualTiles, next]); setSelected([])
+    setManualMessage(manualTiles.length + 1 === totalTiles ? '完成！棋盘已铺满。' : '已放置一块 L 形骨牌。')
+  }
+
   const currentStepInfo = stepIndex > 0 && stepIndex <= solution.steps.length ? solution.steps[stepIndex - 1] : null
 
   return (
@@ -98,15 +126,15 @@ export function TrominoActivity() {
       <header className="mj-lesson-title">
         <span>03 / 棋盘覆盖与分治归纳</span>
         <h1><MathText>残缺棋盘与 L 型骨牌覆盖</MathText></h1>
-        <p><MathText>任意 2ⁿ × 2ⁿ 的棋盘，挖去任意一个格子后，能否被由 3 个方格组成的 L 型骨牌完全铺满？</MathText></p>
+        <p>对于边长为 <MathFormula tex="2^n" /> 的正方形棋盘，缺失一个格子后，能否用由 3 个方格组成的 L 型骨牌完全铺满？</p>
       </header>
 
       <aside className="mj-principle">
         <strong>构造性数学归纳法（分治归纳）</strong>
         <p>
           在数学归纳法中，不仅可以证明“存在性”，还能通过归纳递推步骤直接给出<strong>构造方案</strong>。
-          通过中心放置一块巧妙的 L 型骨牌，我们可以把一个规模为 <MathFormula tex="2^k \times 2^k" /> 的大问题，
-          瞬间转化为 4 个互不干扰的 <MathFormula tex="2^{k-1} \times 2^{k-1}" /> 子问题！
+          通过中心放置一块巧妙的 L 型骨牌，我们可以把一个规模为 <MathFormula tex={String.raw`2^k \times 2^k`} /> 的大问题，
+          瞬间转化为 4 个互不干扰的 <MathFormula tex={String.raw`2^{k-1} \times 2^{k-1}`} /> 子问题！
         </p>
       </aside>
 
@@ -114,7 +142,7 @@ export function TrominoActivity() {
         {/* 左栏：交互棋盘与动画操作 */}
         <section className="mj-panel">
           <span className="mj-kicker">INTERACTIVE TILING · 交互模拟</span>
-          <h2><MathText>{`棋盘尺寸：${size} × ${size}（n = ${k}）`}</MathText></h2>
+          <h2>棋盘尺寸：<MathFormula tex={`${size}\\times${size}`} /></h2>
 
           <div className="tromino-controls">
             <label className="mj-slider" style={{ margin: 0 }}>
@@ -126,7 +154,7 @@ export function TrominoActivity() {
                   style={{ minHeight: '36px', padding: '6px 12px' }}
                   onClick={() => { setK(1); setMissR(0); setMissC(0); }}
                 >
-                  2×2 (n=1)
+                  <MathFormula tex={String.raw`2\times2`} />
                 </button>
                 <button
                   type="button"
@@ -134,7 +162,7 @@ export function TrominoActivity() {
                   style={{ minHeight: '36px', padding: '6px 12px' }}
                   onClick={() => { setK(2); setMissR(1); setMissC(2); }}
                 >
-                  4×4 (n=2)
+                  <MathFormula tex={String.raw`4\times4`} />
                 </button>
                 <button
                   type="button"
@@ -142,19 +170,23 @@ export function TrominoActivity() {
                   style={{ minHeight: '36px', padding: '6px 12px' }}
                   onClick={() => { setK(3); setMissR(2); setMissC(3); }}
                 >
-                  8×8 (n=3)
+                  <MathFormula tex={String.raw`8\times8`} />
                 </button>
               </div>
             </label>
           </div>
 
           <div className="tromino-container">
+            <div className="tromino-controls"><button type="button" className={`mj-button ${manual ? '' : 'secondary'}`} onClick={() => { setManual(true); setIsPlaying(false) }}>自己铺放</button><button type="button" className={`mj-button ${manual ? 'secondary' : ''}`} onClick={() => { setManual(false); setSelected([]) }}>观看演示</button></div>
             <TrominoBoard
               k={k}
               missR={missR}
               missC={missC}
               currentStep={stepIndex - 1}
-              onSelectMiss={handleSelectMiss}
+              onSelectMiss={manual ? null : handleSelectMiss}
+              manualTiles={manual ? manualTiles : null}
+              selected={manual ? selected : []}
+              onSelectCell={manual ? handleManualCell : null}
             />
 
             <div className="tromino-info-badge">
@@ -164,10 +196,11 @@ export function TrominoActivity() {
               <span>•</span>
               <span>需骨牌：<strong>{totalTiles}</strong> 块</span>
             </div>
-            <p className="mj-legend">提示：点击棋盘中任意方格可将其设为新的“缺失格”</p>
+            <p className="mj-legend">{manual ? '依次点击三个相邻格子，放置一块 L 形骨牌；再次点击已选格可取消选择。切回演示可更改缺失格。' : '点击棋盘上的方格，可将其设为新的缺失格。'}</p>
+            {manual && <><p role="status">{manualMessage}</p><div className="tromino-controls"><button type="button" className="mj-button secondary" disabled={!manualTiles.length && !selected.length} onClick={() => { if (selected.length) setSelected([]); else setManualTiles(manualTiles.slice(0, -1)); setManualMessage('') }}>撤销</button><button type="button" className="mj-button secondary" onClick={() => { setManualTiles([]); setSelected([]); setManualMessage('') }}>清空铺放</button></div></>}
           </div>
 
-          <div className="tromino-controls" style={{ marginTop: '16px' }}>
+          {!manual && <div className="tromino-controls" style={{ marginTop: '16px' }}>
             <button
               type="button"
               className="mj-button secondary"
@@ -210,9 +243,9 @@ export function TrominoActivity() {
             >
               全部铺满
             </button>
-          </div>
+          </div>}
           <p style={{ textAlign: 'center', marginTop: '10px', fontSize: '13px', color: '#556c67' }}>
-            已放置：<strong>{stepIndex}</strong> / {solution.steps.length} 块 L 型骨牌
+            已放置：<strong>{manual ? manualTiles.length : stepIndex}</strong> / {solution.steps.length} 块 L 型骨牌
           </p>
         </section>
 
@@ -226,37 +259,37 @@ export function TrominoActivity() {
                 待证命题 <MathFormula tex="P(n)" />：
               </strong>
               <p style={{ margin: 0, fontSize: '15px' }}>
-                对任意正整数 <MathFormula tex="n \ge 1" />，任意挖去一个方格的 <MathFormula tex="2^n \times 2^n" /> 棋盘，
+                对于每个正整数 <MathFormula tex={String.raw`n \ge 1`} /> 和每个缺失格位置，<MathFormula tex={String.raw`2^n \times 2^n`} /> 棋盘中，
                 剩余的 <MathFormula tex="2^{2n} - 1" /> 个格子均可用 L 型骨牌无重叠完全覆盖。
               </p>
             </div>
 
             <div style={{ marginTop: '18px' }}>
               <span className="mj-kicker">STEP 1 · 奠基（BASE CASE）</span>
-              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>当 <MathFormula tex="n = 1" /> 时</h3>
+              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>先看 <MathFormula tex={String.raw`2\times2`} /> 棋盘</h3>
               <p>
-                棋盘大小为 <MathFormula tex="2^1 \times 2^1 = 4" /> 个格子。挖去任意一个格子后，剩余 3 个格子恰好构成一个 L 型骨牌的形状。
+                棋盘共有 <MathFormula tex={String.raw`2 \times 2 = 4`} /> 个格子。无论缺失格位于哪里，剩余 3 个格子恰好构成一个 L 型骨牌的形状。
                 因此命题 <MathFormula tex="P(1)" /> 显然成立。
               </p>
             </div>
 
             <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e1e7e0' }}>
               <span className="mj-kicker">STEP 2 · 归纳假设（INDUCTIVE HYPOTHESIS）</span>
-              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>假设当 <MathFormula tex="n = k" /> 时成立</h3>
+              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>设 <MathFormula tex="n" /> 是正整数，假设较小的棋盘可以铺满</h3>
               <p>
-                即假设：任何挖去一个格子的 <MathFormula tex="2^k \times 2^k" /> 棋盘均可用 L 型骨牌完全铺满。
+                假设：对于每个缺失格位置，<MathFormula tex={String.raw`2^n \times 2^n`} /> 棋盘都可用 L 型骨牌完全铺满。
               </p>
             </div>
 
             <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e1e7e0' }}>
               <span className="mj-kicker">STEP 3 · 归纳递推（INDUCTIVE STEP）</span>
-              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>推导 <MathFormula tex="n = k + 1" /> 的情形</h3>
+              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>用较小棋盘的结论构造更大的棋盘</h3>
               <p>
-                考虑大小为 <MathFormula tex="2^{k+1} \times 2^{k+1}" /> 的棋盘，其中有一个特殊缺格。
+                考虑大小为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的棋盘，其中有一个缺失格。
               </p>
               <ol style={{ paddingLeft: '20px', lineHeight: 1.8 }}>
                 <li>
-                  将棋盘用十字平分为 <strong>4 个大小为 <MathFormula tex="2^k \times 2^k" /> 的子棋盘</strong>。
+                  将棋盘用十字平分为 <strong>4 个大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的子棋盘</strong>。
                 </li>
                 <li>
                   原来的缺失格必然落在其中<strong>某一个</strong>子棋盘中。
@@ -267,17 +300,17 @@ export function TrominoActivity() {
                 </li>
                 <li>
                   这样一来，这 3 个原本完整的子棋盘，中心各被这块 L 型骨牌占用了一个角格，
-                  <strong>全部转化为了“含有一个缺格的 <MathFormula tex="2^k \times 2^k" /> 子棋盘”</strong>！
+                  <strong>都转化为“含有一个缺格的 <MathFormula tex={String.raw`2^n \times 2^n`} /> 子棋盘”</strong>。
                 </li>
                 <li>
                   由归纳假设，全部 4 个子棋盘都可以被 L 型骨牌完美覆盖。
                 </li>
               </ol>
               <div className="mj-formula" style={{ margin: '14px 0' }}>
-                <MathFormula display tex={String.raw`\text{总骨牌数} = 1 + 4 \times \frac{2^{2k}-1}{3} = \frac{4\cdot 2^{2k} - 4 + 3}{3} = \frac{2^{2(k+1)}-1}{3}`} />
+                <MathFormula display tex={String.raw`\text{总骨牌数} = 1 + 4 \times \frac{2^{2n}-1}{3} = \frac{2^{2(n+1)}-1}{3}`} />
               </div>
               <p>
-                至此，命题对 <MathFormula tex="n = k + 1" /> 也成立。由数学归纳法，命题对所有正整数 <MathFormula tex="n" /> 均成立！
+                因此，较小棋盘的结论推出更大棋盘的结论。由数学归纳法，对于每个正整数 <MathFormula tex="n" />，命题都成立。
               </p>
             </div>
           </section>
