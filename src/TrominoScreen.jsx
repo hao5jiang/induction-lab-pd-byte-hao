@@ -60,6 +60,46 @@ export function TrominoBoard({ k = 2, missR = 0, missC = 0, currentStep = -1, on
   )
 }
 
+export function TrominoPieceDemo() {
+  // The 4 orientations of an L-tromino in a 2x2 bounding box:
+  // Each array indicates whether [r, c] in [[0,0], [0,1], [1,0], [1,1]] is filled
+  const orientations = [
+    { name: '缺右上', cells: [true, false, true, true], color: '#2a7b72' },
+    { name: '缺左上', cells: [false, true, true, true], color: '#d97736' },
+    { name: '缺右下', cells: [true, true, true, false], color: '#3f88c5' },
+    { name: '缺左下', cells: [true, true, false, true], color: '#7a5195' },
+  ]
+
+  return (
+    <div className="tromino-intro-card">
+      <div className="tromino-intro-text">
+        <span className="mj-kicker" style={{ display: 'block', marginBottom: '4px' }}>WHAT IS AN L-TROMINO · 什么是 L 型骨牌</span>
+        <h3>由 3 个正方形格子拼成的“L”形</h3>
+        <p>
+          每个 <strong>L 型骨牌</strong>由 3 个 <MathFormula tex={String.raw`1 \times 1`} /> 的正方形小方格拼合而成（即一个 <MathFormula tex={String.raw`2 \times 2`} /> 的四格中挖去任意 1 格）。
+          在平面上它可以旋转成 4 种方向：
+        </p>
+      </div>
+      <div className="tromino-orientations">
+        {orientations.map((o, idx) => (
+          <div key={idx} className="tromino-orientation-item" title={o.name}>
+            <div className="tromino-mini-grid">
+              {o.cells.map((filled, cIdx) => (
+                <div
+                  key={cIdx}
+                  className={`tromino-mini-cell ${filled ? 'filled' : 'empty'}`}
+                  style={{ backgroundColor: filled ? o.color : undefined }}
+                />
+              ))}
+            </div>
+            <span className="tromino-orientation-label">{o.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function TrominoActivity() {
   const [k, setK] = useState(2) // 1: 2x2, 2: 4x4, 3: 8x8
   const [missR, setMissR] = useState(1)
@@ -128,6 +168,8 @@ export function TrominoActivity() {
         <h1><MathText>残缺棋盘与 L 型骨牌覆盖</MathText></h1>
         <p>对于边长为 <MathFormula tex="2^n" /> 的正方形棋盘，缺失一个格子后，能否用由 3 个方格组成的 L 型骨牌完全铺满？</p>
       </header>
+
+      <TrominoPieceDemo />
 
       <aside className="mj-principle">
         <strong>构造性数学归纳法（分治归纳）</strong>
