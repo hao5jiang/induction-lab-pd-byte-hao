@@ -256,7 +256,7 @@ export function TrominoActivity() {
             
             <div className="tromino-formula-box">
               <strong style={{ display: 'block', marginBottom: '6px', color: '#116a64' }}>
-                待证命题 <MathFormula tex="P(n)" />：
+                待证命题：
               </strong>
               <p style={{ margin: 0, fontSize: '15px' }}>
                 对于每个正整数 <MathFormula tex={String.raw`n \ge 1`} /> 和每个缺失格位置，<MathFormula tex={String.raw`2^n \times 2^n`} /> 棋盘中，
@@ -264,28 +264,23 @@ export function TrominoActivity() {
               </p>
             </div>
 
-            <div style={{ marginTop: '18px' }}>
-              <span className="mj-kicker">STEP 1 · 奠基（BASE CASE）</span>
+            <div style={{ marginTop: '20px' }}>
+              <span className="mj-kicker">BASE CASE</span>
               <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>先看 <MathFormula tex={String.raw`2\times2`} /> 棋盘</h3>
               <p>
                 棋盘共有 <MathFormula tex={String.raw`2 \times 2 = 4`} /> 个格子。无论缺失格位于哪里，剩余 3 个格子恰好构成一个 L 型骨牌的形状。
-                因此命题 <MathFormula tex="P(1)" /> 显然成立。
+                因此该情形显然成立。
               </p>
             </div>
 
             <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e1e7e0' }}>
-              <span className="mj-kicker">STEP 2 · 归纳假设（INDUCTIVE HYPOTHESIS）</span>
+              <span className="mj-kicker">STEP CASE</span>
               <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>设 <MathFormula tex="n" /> 是正整数</h3>
               <p>
                 假设：对于每个缺失格位置，<MathFormula tex={String.raw`2^n \times 2^n`} /> 棋盘都可用 L 型骨牌完全铺满。
               </p>
-            </div>
-
-            <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e1e7e0' }}>
-              <span className="mj-kicker">STEP 3 · 归纳递推（INDUCTIVE STEP）</span>
-              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>用较小棋盘的结论构造更大的棋盘</h3>
               <p>
-                考虑大小为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的棋盘，其中有一个缺失格。
+                用较小棋盘的结论构造更大的棋盘：考虑大小为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的棋盘，其中有一个缺失格。
               </p>
               <ol style={{ paddingLeft: '20px', lineHeight: 1.8 }}>
                 <li>
