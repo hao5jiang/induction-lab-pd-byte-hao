@@ -133,8 +133,8 @@ export function TrominoActivity() {
         <strong>构造性数学归纳法（分治归纳）</strong>
         <p>
           在数学归纳法中，不仅可以证明“存在性”，还能通过归纳递推步骤直接给出<strong>构造方案</strong>。
-          通过中心放置一块巧妙的 L 型骨牌，我们可以把一个规模为 <MathFormula tex={String.raw`2^k \times 2^k`} /> 的大问题，
-          瞬间转化为 4 个互不干扰的 <MathFormula tex={String.raw`2^{k-1} \times 2^{k-1}`} /> 子问题！
+          通过中心放置一块巧妙的 L 型骨牌，我们可以把一个规模为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的大问题，
+          瞬间转化为 4 个互不干扰的 <MathFormula tex={String.raw`2^n \times 2^n`} /> 子问题！
         </p>
       </aside>
 
@@ -322,7 +322,7 @@ export function TrominoActivity() {
             </p>
             <ul style={{ paddingLeft: '20px', lineHeight: 1.8 }}>
               <li><strong>汉诺塔问题</strong>：将 <MathFormula tex="n+1" /> 阶问题拆分为两次 <MathFormula tex="n" /> 阶小塔的移动与一次底盘的移动。</li>
-              <li><strong>棋盘覆盖问题</strong>：将 <MathFormula tex="2^{k+1}" /> 大棋盘通过中心放置 1 块骨牌，转化为 4 个 <MathFormula tex="2^k" /> 的子棋盘独立求解。</li>
+              <li><strong>棋盘覆盖问题</strong>：将 <MathFormula tex="2^{n+1}" /> 大棋盘通过中心放置 1 块骨牌，转化为 4 个 <MathFormula tex="2^n" /> 的子棋盘独立求解。</li>
             </ul>
           </section>
         </div>
