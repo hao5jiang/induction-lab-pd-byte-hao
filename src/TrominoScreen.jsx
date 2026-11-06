@@ -275,7 +275,7 @@ export function TrominoActivity() {
 
             <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e1e7e0' }}>
               <span className="mj-kicker">STEP 2 · 归纳假设（INDUCTIVE HYPOTHESIS）</span>
-              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>设 <MathFormula tex="n" /> 是正整数，假设较小的棋盘可以铺满</h3>
+              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>设 <MathFormula tex="n" /> 是正整数</h3>
               <p>
                 假设：对于每个缺失格位置，<MathFormula tex={String.raw`2^n \times 2^n`} /> 棋盘都可用 L 型骨牌完全铺满。
               </p>
