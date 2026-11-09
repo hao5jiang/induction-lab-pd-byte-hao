@@ -53,9 +53,15 @@
 .mj-note { display:block; font-size:16px; line-height:1.7; margin:22px 0; }
 .mj-note-prompt { font-weight:500; margin-bottom:8px; color:#182d32; }
 .mj-note-box { border:1px solid #b2c5b7; border-radius:6px; background:#fff; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
-.mj-note-toolbar { background:#f3f6f3; border-bottom:1px solid #dbe4dc; padding:7px 10px; display:flex; flex-direction:column; gap:6px; }
-.mj-note-toolbar-header { display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#58726b; }
-.mj-note-toolbar-title { font-weight:600; display:inline-flex; align-items:center; gap:4px; color:#145952; }
+.mj-note-toolbar { background:#f3f6f3; border-bottom:1px solid #dbe4dc; padding:8px 10px; display:flex; flex-direction:column; gap:8px; }
+.mj-note-toolbar-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:12px; color:#58726b; }
+.mj-note-mode-tabs { display:flex; gap:6px; align-items:center; }
+.mj-mode-tab { background:#e6eee7; border:1px solid #bfd0c3; border-radius:4px; padding:4px 10px; font-size:12px; font-weight:600; color:#2c5046; cursor:pointer; transition:all 0.15s; }
+.mj-mode-tab:hover { background:#dce7dd; color:#116a64; }
+.mj-mode-tab.active { background:#116a64; color:#fff; border-color:#116a64; box-shadow:0 1px 2px rgba(0,0,0,0.1); }
+.mj-mode-tab.aux { font-weight:500; font-size:11px; background:#edf3ee; color:#49655d; }
+.mj-mode-tab.aux.active { background:#37574f; color:#fff; border-color:#37574f; }
+.mj-note-latex-hint { font-size:11px; color:#607a71; font-style:italic; padding:2px 2px; }
 .mj-note-preview-toggle { background:#fff; border:1px solid #91a79e; border-radius:3px; font-size:11px; padding:3px 8px; color:#145952; cursor:pointer; transition:all 0.15s; }
 .mj-note-preview-toggle:hover { background:#e3ede5; }
 .mj-note-preview-toggle.active { background:#116a64; color:#fff; border-color:#116a64; }

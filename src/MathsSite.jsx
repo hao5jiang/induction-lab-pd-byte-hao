@@ -21,48 +21,93 @@ function Reveal({ title = 'Compare your reasoning', children, onToggle }) {
   return <details className="mj-reveal" onToggle={onToggle}><summary>{title}</summary><div>{children}</div></details>
 }
 
-const MATH_TOOLBAR_GROUPS = [
+const WORD_MATHTYPE_GROUPS = [
   {
-    name: '导数/函数',
+    name: '常用微积分与函数',
     items: [
-      { label: "f'(x)", displayTex: "f'(x)", tex: "f'(x)" },
-      { label: "g'(x)", displayTex: "g'(x)", tex: "g'(x)" },
-      { label: "f'(a)", displayTex: "f'(a)", tex: "f'(a)" },
-      { label: "eˣ", displayTex: "e^x", tex: "e^x" },
-      { label: "Ceˣ", displayTex: "Ce^x", tex: "Ce^x" },
-      { label: "e⁻ˣ", displayTex: "e^{-x}", tex: "e^{-x}" },
-      { label: "x²", displayTex: "x^2", tex: "x^2" },
-      { label: "f'=f", displayTex: "f'=f", tex: "f'(x)=f(x)" },
+      { label: "f′(x)", displayTex: "f'(x)", val: "f′(x)" },
+      { label: "g′(x)", displayTex: "g'(x)", val: "g′(x)" },
+      { label: "f′(a)", displayTex: "f'(a)", val: "f′(a)" },
+      { label: "eˣ", displayTex: "e^x", val: "eˣ" },
+      { label: "Ceˣ", displayTex: "Ce^x", val: "Ceˣ" },
+      { label: "e⁻ˣ", displayTex: "e^{-x}", val: "e⁻ˣ" },
+      { label: "x²", displayTex: "x^2", val: "x²" },
+      { label: "f′ = f", displayTex: "f'=f", val: "f′ = f" },
+      { label: "f(x)/eˣ", displayTex: "\\frac{f(x)}{e^x}", val: "f(x)/eˣ" },
+      { label: "′", displayTex: "'", val: "′" },
     ],
   },
   {
-    name: '模板 (MathType)',
+    name: '结构模板 (MathType)',
     items: [
-      { label: 'a/b', displayTex: '\\frac{a}{b}', tex: '\\frac{a}{b}', isFraction: true },
-      { label: 'xⁿ', displayTex: 'x^n', tex: '^{n}', isSup: true },
-      { label: 'xₙ', displayTex: 'x_n', tex: '_{n}', isSub: true },
-      { label: 'lim', displayTex: '\\lim', tex: '\\lim_{x \\to 0}' },
-      { label: '√x', displayTex: '\\sqrt{x}', tex: '\\sqrt{x}', isSqrt: true },
-      { label: '$...$', displayTex: '$...$', tex: '$ $', isWrapper: true },
+      { label: 'a/b', displayTex: '\\frac{a}{b}', isFraction: true },
+      { label: 'xⁿ', displayTex: 'x^n', val: 'ⁿ' },
+      { label: 'xₙ', displayTex: 'x_n', val: 'ₙ' },
+      { label: '√x', displayTex: '\\sqrt{x}', isSqrt: true },
+      { label: 'lim', displayTex: '\\lim', val: 'lim[x→0]' },
+      { label: '( )', displayTex: '( )', isParens: true },
     ],
   },
   {
-    name: '符号',
+    name: '上下标',
     items: [
-      { label: '∞', displayTex: '\\infty', tex: '\\infty' },
-      { label: '≠', displayTex: '\\neq', tex: '\\neq' },
-      { label: '→', displayTex: '\\to', tex: '\\to' },
-      { label: '±', displayTex: '\\pm', tex: '\\pm' },
-      { label: '·', displayTex: '\\cdot', tex: '\\cdot' },
-      { label: '≤', displayTex: '\\le', tex: '\\le' },
-      { label: '≥', displayTex: '\\ge', tex: '\\ge' },
+      { label: '²', val: '²' },
+      { label: '³', val: '³' },
+      { label: 'ⁿ', val: 'ⁿ' },
+      { label: 'ˣ', val: 'ˣ' },
+      { label: '⁻¹', val: '⁻¹' },
+      { label: '₀', val: '₀' },
+      { label: '₁', val: '₁' },
+      { label: '₂', val: '₂' },
+      { label: 'ₙ', val: 'ₙ' },
+    ],
+  },
+  {
+    name: '数学符号',
+    items: [
+      { label: '∞', displayTex: '\\infty', val: '∞' },
+      { label: '≠', displayTex: '\\neq', val: '≠' },
+      { label: '→', displayTex: '\\to', val: '→' },
+      { label: '±', displayTex: '\\pm', val: '±' },
+      { label: '·', displayTex: '\\cdot', val: '·' },
+      { label: '×', displayTex: '\\times', val: '×' },
+      { label: '÷', displayTex: '\\div', val: '÷' },
+      { label: '≤', displayTex: '\\le', val: '≤' },
+      { label: '≥', displayTex: '\\ge', val: '≥' },
+      { label: '≈', displayTex: '\\approx', val: '≈' },
+      { label: 'Δx', displayTex: '\\Delta x', val: 'Δx' },
+      { label: 'π', displayTex: '\\pi', val: 'π' },
+    ],
+  },
+]
+
+const LATEX_AUX_GROUPS = [
+  {
+    name: 'LaTeX 辅助工具',
+    items: [
+      { label: '$...$', displayTex: '$...$', isWrapper: true },
+      { label: '\\frac{a}{b}', displayTex: '\\frac{a}{b}', tex: '\\frac{a}{b}', isFraction: true },
+      { label: 'x^{n}', displayTex: 'x^n', tex: '^{n}', isSup: true },
+      { label: 'x_{n}', displayTex: 'x_n', tex: '_{n}', isSub: true },
+      { label: '\\sqrt{x}', displayTex: '\\sqrt{x}', tex: '\\sqrt{x}', isSqrt: true },
+      { label: '\\lim', displayTex: '\\lim', tex: '\\lim_{x \\to 0}' },
+      { label: '\\frac{df}{dx}', displayTex: '\\frac{df}{dx}', tex: '\\frac{df}{dx}' },
+      { label: '\\infty', displayTex: '\\infty', tex: '\\infty' },
+      { label: '\\neq', displayTex: '\\neq', tex: '\\neq' },
+      { label: '\\to', displayTex: '\\to', tex: '\\to' },
+      { label: '\\pm', displayTex: '\\pm', tex: '\\pm' },
+      { label: '\\cdot', displayTex: '\\cdot', tex: '\\cdot' },
+      { label: '\\le', displayTex: '\\le', tex: '\\le' },
+      { label: '\\ge', displayTex: '\\ge', tex: '\\ge' },
     ],
   },
 ]
 
 function renderMathNote(content) {
   if (!content) return null
-  const tokens = content.split(/(\$\$[\s\S]+?\$\$|\$[^\$\n]+?\$)/g)
+  // Convert Word-style (num)/(den) into LaTeX \frac{num}{den} for preview
+  const preprocessed = content.replace(/\(([A-Za-z0-9+−\-*'\s]+)\)\/\(([A-Za-z0-9+−\-*'\s]+)\)/g, '$\\frac{$1}{$2}$')
+  const tokens = preprocessed.split(/(\$\$[\s\S]+?\$\$|\$[^\$\n]+?\$)/g)
   return tokens.map((part, index) => {
     if (part.startsWith('$$') && part.endsWith('$$') && part.length > 4) {
       const tex = part.slice(2, -2).trim()
@@ -96,54 +141,69 @@ function Note({ id, children }) {
   const [submittedText, setSubmittedText] = useState(() => {
     try { return sessionStorage.getItem(`mj:sub_val:${id}`) || '' } catch { return '' }
   })
+  const [mode, setMode] = useState('mathtype') // 'mathtype' (default/primary) or 'latex' (auxiliary)
   const [showPreview, setShowPreview] = useState(false)
   const textareaRef = useRef(null)
 
   const isDirty = submittedTime !== null && text !== submittedText
 
-  const handleInsert = (item) => {
+  const handleInsert = (item, isLatex = false) => {
     const textarea = textareaRef.current
     if (!textarea) return
     const start = textarea.selectionStart ?? text.length
     const end = textarea.selectionEnd ?? text.length
     const selected = text.slice(start, end)
 
-    const textBefore = text.slice(0, start)
-    const dollarsBefore = (textBefore.match(/(?<!\\)\$/g) || []).length
-    const insideMath = dollarsBefore % 2 === 1
-
     let insertion = ''
     let cursorOffset = 0
 
-    if (item.isWrapper) {
-      if (selected) {
-        insertion = `$${selected}$`
+    if (isLatex) {
+      const textBefore = text.slice(0, start)
+      const dollarsBefore = (textBefore.match(/(?<!\\)\$/g) || []).length
+      const insideMath = dollarsBefore % 2 === 1
+
+      if (item.isWrapper) {
+        insertion = selected ? `$${selected}$` : `$  $`
+        cursorOffset = selected ? insertion.length : 2
+      } else if (item.isFraction) {
+        const num = selected || 'a'
+        const code = insideMath ? `\\frac{${num}}{b}` : `$\\frac{${num}}{b}$`
+        insertion = code
+        cursorOffset = insideMath ? code.length - 2 : code.length - 3
+      } else if (item.isSup) {
+        const code = selected ? `${selected}^{n}` : `^{n}`
+        insertion = insideMath ? code : `$${code}$`
+        cursorOffset = insertion.length - (insideMath ? 2 : 3)
+      } else if (item.isSub) {
+        const code = selected ? `${selected}_{n}` : `_{n}`
+        insertion = insideMath ? code : `$${code}$`
+        cursorOffset = insertion.length - (insideMath ? 2 : 3)
+      } else if (item.isSqrt) {
+        const val = selected || 'x'
+        const code = insideMath ? `\\sqrt{${val}}` : `$\\sqrt{${val}}$`
+        insertion = code
         cursorOffset = insertion.length
       } else {
-        insertion = `$  $`
-        cursorOffset = 2
+        insertion = insideMath ? item.tex : `$${item.tex}$`
+        cursorOffset = insertion.length
       }
-    } else if (item.isFraction) {
-      const num = selected || 'a'
-      const code = insideMath ? `\\frac{${num}}{b}` : `$\\frac{${num}}{b}$`
-      insertion = code
-      cursorOffset = insideMath ? code.length - 2 : code.length - 3
-    } else if (item.isSup) {
-      const code = selected ? `${selected}^{n}` : `^{n}`
-      insertion = insideMath ? code : `$${code}$`
-      cursorOffset = insertion.length - (insideMath ? 2 : 3)
-    } else if (item.isSub) {
-      const code = selected ? `${selected}_{n}` : `_{n}`
-      insertion = insideMath ? code : `$${code}$`
-      cursorOffset = insertion.length - (insideMath ? 2 : 3)
-    } else if (item.isSqrt) {
-      const val = selected || 'x'
-      const code = insideMath ? `\\sqrt{${val}}` : `$\\sqrt{${val}}$`
-      insertion = code
-      cursorOffset = insertion.length
     } else {
-      insertion = insideMath ? item.tex : `$${item.tex}$`
-      cursorOffset = insertion.length
+      // Primary Word MathType Mode: inserts natural, readable math characters without LaTeX dollar clutter
+      if (item.isFraction) {
+        const num = selected || 'a'
+        insertion = `(${num})/(b)`
+        cursorOffset = insertion.length - 2
+      } else if (item.isSqrt) {
+        const val = selected || 'x'
+        insertion = `√(${val})`
+        cursorOffset = insertion.length
+      } else if (item.isParens) {
+        insertion = selected ? `(${selected})` : `( )`
+        cursorOffset = selected ? insertion.length : 2
+      } else {
+        insertion = item.val || item.label
+        cursorOffset = insertion.length
+      }
     }
 
     const nextText = text.slice(0, start) + insertion + text.slice(end)
@@ -173,13 +233,31 @@ function Note({ id, children }) {
     setSubmittedText(text)
   }
 
+  const activeGroups = mode === 'mathtype' ? WORD_MATHTYPE_GROUPS : LATEX_AUX_GROUPS
+
   return (
     <div className="mj-note">
       <div className="mj-note-prompt">{children}</div>
       <div className="mj-note-box">
         <div className="mj-note-toolbar">
           <div className="mj-note-toolbar-header">
-            <span className="mj-note-toolbar-title">插入数学符号 / MathType &amp; LaTeX</span>
+            <div className="mj-note-mode-tabs">
+              <button
+                type="button"
+                className={`mj-mode-tab ${mode === 'mathtype' ? 'active' : ''}`}
+                onClick={() => setMode('mathtype')}
+              >
+                🔣 MathType (Word 样式)
+              </button>
+              <button
+                type="button"
+                className={`mj-mode-tab aux ${mode === 'latex' ? 'active' : ''}`}
+                onClick={() => setMode('latex')}
+                title="LaTeX 辅助工具模式"
+              >
+                💻 LaTeX 辅助
+              </button>
+            </div>
             <button
               type="button"
               className={`mj-note-preview-toggle ${showPreview ? 'active' : ''}`}
@@ -188,8 +266,13 @@ function Note({ id, children }) {
               {showPreview ? '隐藏公式预览 ✕' : '实时公式预览 👁'}
             </button>
           </div>
+          {mode === 'latex' && (
+            <div className="mj-note-latex-hint">
+              提示：LaTeX 作为高级辅助，点击按钮直接插入标准代码定界符与命令。
+            </div>
+          )}
           <div className="mj-note-groups">
-            {MATH_TOOLBAR_GROUPS.map((grp) => (
+            {activeGroups.map((grp) => (
               <div key={grp.name} className="mj-note-group">
                 <span className="mj-note-group-label">{grp.name}:</span>
                 {grp.items.map((item) => {
@@ -215,8 +298,8 @@ function Note({ id, children }) {
                       key={item.label}
                       type="button"
                       className="mj-math-btn"
-                      title={`插入 ${item.tex}`}
-                      onClick={() => handleInsert(item)}
+                      title={mode === 'latex' ? `插入 LaTeX: ${item.tex || item.label}` : `插入 MathType: ${item.val || item.label}`}
+                      onClick={() => handleInsert(item, mode === 'latex')}
                     >
                       {rendered}
                     </button>
@@ -230,7 +313,7 @@ function Note({ id, children }) {
           ref={textareaRef}
           rows={3}
           value={text}
-          placeholder="写下你的思考、推导或疑问（可使用上方按钮插入数学公式，如 $f'(x)$ 或 $g(x)=\frac{f(x)}{e^x}$）…"
+          placeholder="像在 Word 中一样写下你的推导或思考（点击上方 MathType 按钮直接插入 f′(x)、eˣ、(a)/(b) 等数学符号，右上角可开启实时预览）…"
           onChange={(event) => {
             setText(event.target.value)
             try {
@@ -456,7 +539,7 @@ function DomainActivity({onFoundGap, isTeacher = false, expandAll = false}) {
       onFoundGap()
     }
   }, [expandAll, onFoundGap])
-  return <><header className="mj-lesson-title"><span>05 / CHECK THE CLAIM</span><h1>Breaking news: a major gap</h1><div className="mj-proof-alert"><strong>Our previous claim needs another condition.</strong><p>We said <MathFormula tex="f'(x)=f(x)" /> and <MathFormula tex="f(0)=1" /> force <MathFormula tex="f(x)=e^x" />. Can you find a function that breaks this claim?</p></div></header><div className="mj-two-col"><section className="mj-panel"><h2>One function, two separated pieces</h2><p>Its domain is <MathFormula tex={String.raw`(-\infty,1)\cup(1,\infty)`} />.</p><div className="mj-formula"><MathFormula display tex={String.raw`F(x)=\begin{cases}e^x,&x<1,\\2e^x,&x>1.\end{cases}`} /></div><Graph kind="exp" a={0} disconnected /><p>The hollow points show that <MathFormula tex="x=1" /> is excluded. The solid point is <MathFormula tex="F(0)=1" />.</p></section><section className="mj-panel"><h2>Test all three claims</h2><Note id="domain">Does <MathFormula tex="F'(x)=F(x)" /> hold wherever this function is defined? Is <MathFormula tex="F(0)=1" />? Must <MathFormula tex="F(x)=e^x" /> everywhere on its domain?</Note><Reveal title="Reveal the counterexample" forceOpen={expandAll} onToggle={event=>{if(event.currentTarget.open) onFoundGap()}}><p>On the left piece, <MathFormula tex="F'(x)=F(x)=e^x" />. On the right piece, <MathFormula tex="F'(x)=F(x)=2e^x" />. Also <MathFormula tex="F(0)=1" />, yet <MathFormula tex={String.raw`F(2)=2e^2\ne e^2`} />.</p><p><strong>Here is the gap:</strong> from <MathFormula tex="g'(x)=0" />, we can conclude that <MathFormula tex="g" /> is constant on each connected interval. We cannot assume one common constant across separated pieces.</p></Reveal></section></div><p className="mj-legend">{isTeacher ? "提示：可展开查看反例，或直接点击下方按钮继续。" : "Open the counterexample before continuing."}</p></>
+  return <><header className="mj-lesson-title"><span>05 / CHECK THE CLAIM</span><h1>Breaking news: a major gap</h1><div className="mj-proof-alert"><strong>Our previous claim needs another condition.</strong><p>We said <MathFormula tex="f'(x)=f(x)" /> and <MathFormula tex="f(0)=1" /> force <MathFormula tex="f(x)=e^x" />. Can you find a function that breaks this claim?</p></div></header><div className="mj-two-col"><section className="mj-panel"><h2>One function, two separated pieces</h2><p>Its domain is <MathFormula tex={String.raw`(-\infty,1)\cup(1,\infty)`} />.</p><div className="mj-formula"><MathFormula display tex={String.raw`F(x)=\begin{cases}e^x,&x<1,\\2e^x,&x>1.\end{cases}`} /></div><Graph kind="exp" a={0} disconnected /><p>The hollow points show that <MathFormula tex="x=1" /> is excluded. The solid point is <MathFormula tex="F(0)=1" />.</p></section><section className="mj-panel"><h2>Test all three claims</h2><Note id="domain">Does <MathFormula tex="F'(x)=F(x)" /> hold wherever this function is defined? Is <MathFormula tex="F(0)=1" />? Must <MathFormula tex="F(x)=e^x" /> everywhere on its domain?</Note><Reveal title="Reveal the reasoning" forceOpen={expandAll} onToggle={event=>{if(event.currentTarget.open) onFoundGap()}}><p>On the left piece, <MathFormula tex="F'(x)=F(x)=e^x" />. On the right piece, <MathFormula tex="F'(x)=F(x)=2e^x" />. Also <MathFormula tex="F(0)=1" />, yet <MathFormula tex={String.raw`F(2)=2e^2\ne e^2`} />.</p><p><strong>Here is the gap:</strong> from <MathFormula tex="g'(x)=0" />, we can conclude that <MathFormula tex="g" /> is constant on each connected interval. We cannot assume one common constant across separated pieces.</p></Reveal></section></div><p className="mj-legend">{isTeacher ? "提示：可展开查看推导演示，或直接点击下方按钮继续。" : "Open the reasoning before continuing."}</p></>
 }
 function CorrectedClaim({isTeacher = false, expandAll = false}) {
   return <>
