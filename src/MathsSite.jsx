@@ -1,10 +1,11 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import App from './App.jsx'
 import Classroom, { StudentJoinView } from './Classroom.jsx'
 import { valueAt, slopeAt, secantSlope, componentFunction } from './derivativeMath.js'
 import { TrominoActivity } from './TrominoScreen.jsx'
 import './mathsSite.css'
 import { MathFormula, MathText } from './MathText.jsx'
+import katex from 'katex'
 
 const sections = ['From two points to a tangent', 'What does (2)′ mean?', 'Its own derivative', 'Why only Ceˣ?', 'Find the gap', 'Repair the claim']
 function siteUrl(topic, role = null) {
@@ -19,9 +20,258 @@ function siteUrl(topic, role = null) {
 function Reveal({ title = 'Compare your reasoning', children, onToggle }) {
   return <details className="mj-reveal" onToggle={onToggle}><summary>{title}</summary><div>{children}</div></details>
 }
+
+const MATH_TOOLBAR_GROUPS = [
+  {
+    name: '导数/函数',
+    items: [
+      { label: "f'(x)", displayTex: "f'(x)", tex: "f'(x)" },
+      { label: "g'(x)", displayTex: "g'(x)", tex: "g'(x)" },
+      { label: "f'(a)", displayTex: "f'(a)", tex: "f'(a)" },
+      { label: "eˣ", displayTex: "e^x", tex: "e^x" },
+      { label: "Ceˣ", displayTex: "Ce^x", tex: "Ce^x" },
+      { label: "e⁻ˣ", displayTex: "e^{-x}", tex: "e^{-x}" },
+      { label: "x²", displayTex: "x^2", tex: "x^2" },
+      { label: "f'=f", displayTex: "f'=f", tex: "f'(x)=f(x)" },
+    ],
+  },
+  {
+    name: '模板 (MathType)',
+    items: [
+      { label: 'a/b', displayTex: '\\frac{a}{b}', tex: '\\frac{a}{b}', isFraction: true },
+      { label: 'xⁿ', displayTex: 'x^n', tex: '^{n}', isSup: true },
+      { label: 'xₙ', displayTex: 'x_n', tex: '_{n}', isSub: true },
+      { label: 'lim', displayTex: '\\lim', tex: '\\lim_{x \\to 0}' },
+      { label: '√x', displayTex: '\\sqrt{x}', tex: '\\sqrt{x}', isSqrt: true },
+      { label: '$...$', displayTex: '$...$', tex: '$ $', isWrapper: true },
+    ],
+  },
+  {
+    name: '符号',
+    items: [
+      { label: '∞', displayTex: '\\infty', tex: '\\infty' },
+      { label: '≠', displayTex: '\\neq', tex: '\\neq' },
+      { label: '→', displayTex: '\\to', tex: '\\to' },
+      { label: '±', displayTex: '\\pm', tex: '\\pm' },
+      { label: '·', displayTex: '\\cdot', tex: '\\cdot' },
+      { label: '≤', displayTex: '\\le', tex: '\\le' },
+      { label: '≥', displayTex: '\\ge', tex: '\\ge' },
+    ],
+  },
+]
+
+function renderMathNote(content) {
+  if (!content) return null
+  const tokens = content.split(/(\$\$[\s\S]+?\$\$|\$[^\$\n]+?\$)/g)
+  return tokens.map((part, index) => {
+    if (part.startsWith('$$') && part.endsWith('$$') && part.length > 4) {
+      const tex = part.slice(2, -2).trim()
+      try {
+        const html = katex.renderToString(tex, { displayMode: true, throwOnError: false })
+        return <div key={index} className="mj-typeset-display" dangerouslySetInnerHTML={{ __html: html }} />
+      } catch {
+        return <code key={index}>{part}</code>
+      }
+    }
+    if (part.startsWith('$') && part.endsWith('$') && part.length > 2) {
+      const tex = part.slice(1, -1).trim()
+      try {
+        const html = katex.renderToString(tex, { displayMode: false, throwOnError: false })
+        return <span key={index} className="mj-typeset-inline" dangerouslySetInnerHTML={{ __html: html }} />
+      } catch {
+        return <code key={index}>{part}</code>
+      }
+    }
+    return <MathText key={index}>{part}</MathText>
+  })
+}
+
 function Note({ id, children }) {
-  const [text, setText] = useState(() => { try { return sessionStorage.getItem(`mj:${id}`) || '' } catch { return '' } })
-  return <label className="mj-note">{children}<textarea rows={3} value={text} placeholder="Write a thought, a question, or a reason…" onChange={event => { setText(event.target.value); try { sessionStorage.setItem(`mj:${id}`, event.target.value) } catch { /* Notes remain usable without storage. */ } }} /><small>Your notes stay in this browser tab; they are not submitted.</small></label>
+  const [text, setText] = useState(() => {
+    try { return sessionStorage.getItem(`mj:${id}`) || '' } catch { return '' }
+  })
+  const [submittedTime, setSubmittedTime] = useState(() => {
+    try { return sessionStorage.getItem(`mj:sub_at:${id}`) || null } catch { return null }
+  })
+  const [submittedText, setSubmittedText] = useState(() => {
+    try { return sessionStorage.getItem(`mj:sub_val:${id}`) || '' } catch { return '' }
+  })
+  const [showPreview, setShowPreview] = useState(false)
+  const textareaRef = useRef(null)
+
+  const isDirty = submittedTime !== null && text !== submittedText
+
+  const handleInsert = (item) => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+    const start = textarea.selectionStart ?? text.length
+    const end = textarea.selectionEnd ?? text.length
+    const selected = text.slice(start, end)
+
+    const textBefore = text.slice(0, start)
+    const dollarsBefore = (textBefore.match(/(?<!\\)\$/g) || []).length
+    const insideMath = dollarsBefore % 2 === 1
+
+    let insertion = ''
+    let cursorOffset = 0
+
+    if (item.isWrapper) {
+      if (selected) {
+        insertion = `$${selected}$`
+        cursorOffset = insertion.length
+      } else {
+        insertion = `$  $`
+        cursorOffset = 2
+      }
+    } else if (item.isFraction) {
+      const num = selected || 'a'
+      const code = insideMath ? `\\frac{${num}}{b}` : `$\\frac{${num}}{b}$`
+      insertion = code
+      cursorOffset = insideMath ? code.length - 2 : code.length - 3
+    } else if (item.isSup) {
+      const code = selected ? `${selected}^{n}` : `^{n}`
+      insertion = insideMath ? code : `$${code}$`
+      cursorOffset = insertion.length - (insideMath ? 2 : 3)
+    } else if (item.isSub) {
+      const code = selected ? `${selected}_{n}` : `_{n}`
+      insertion = insideMath ? code : `$${code}$`
+      cursorOffset = insertion.length - (insideMath ? 2 : 3)
+    } else if (item.isSqrt) {
+      const val = selected || 'x'
+      const code = insideMath ? `\\sqrt{${val}}` : `$\\sqrt{${val}}$`
+      insertion = code
+      cursorOffset = insertion.length
+    } else {
+      insertion = insideMath ? item.tex : `$${item.tex}$`
+      cursorOffset = insertion.length
+    }
+
+    const nextText = text.slice(0, start) + insertion + text.slice(end)
+    setText(nextText)
+    try {
+      sessionStorage.setItem(`mj:${id}`, nextText)
+    } catch {}
+
+    setTimeout(() => {
+      textarea.focus()
+      const targetPos = start + cursorOffset
+      textarea.setSelectionRange(targetPos, targetPos)
+    }, 0)
+  }
+
+  const handleSubmit = (e) => {
+    e?.preventDefault()
+    if (!text.trim()) return
+    const now = new Date()
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    try {
+      sessionStorage.setItem(`mj:${id}`, text)
+      sessionStorage.setItem(`mj:sub_at:${id}`, timeStr)
+      sessionStorage.setItem(`mj:sub_val:${id}`, text)
+    } catch {}
+    setSubmittedTime(timeStr)
+    setSubmittedText(text)
+  }
+
+  return (
+    <div className="mj-note">
+      <div className="mj-note-prompt">{children}</div>
+      <div className="mj-note-box">
+        <div className="mj-note-toolbar">
+          <div className="mj-note-toolbar-header">
+            <span className="mj-note-toolbar-title">插入数学符号 / MathType &amp; LaTeX</span>
+            <button
+              type="button"
+              className={`mj-note-preview-toggle ${showPreview ? 'active' : ''}`}
+              onClick={() => setShowPreview(!showPreview)}
+            >
+              {showPreview ? '隐藏公式预览 ✕' : '实时公式预览 👁'}
+            </button>
+          </div>
+          <div className="mj-note-groups">
+            {MATH_TOOLBAR_GROUPS.map((grp) => (
+              <div key={grp.name} className="mj-note-group">
+                <span className="mj-note-group-label">{grp.name}:</span>
+                {grp.items.map((item) => {
+                  let rendered = item.label
+                  if (item.displayTex) {
+                    try {
+                      rendered = (
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: katex.renderToString(item.displayTex, {
+                              displayMode: false,
+                              throwOnError: false,
+                            }),
+                          }}
+                        />
+                      )
+                    } catch {
+                      rendered = item.label
+                    }
+                  }
+                  return (
+                    <button
+                      key={item.label}
+                      type="button"
+                      className="mj-math-btn"
+                      title={`插入 ${item.tex}`}
+                      onClick={() => handleInsert(item)}
+                    >
+                      {rendered}
+                    </button>
+                  )
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+        <textarea
+          ref={textareaRef}
+          rows={3}
+          value={text}
+          placeholder="写下你的思考、推导或疑问（可使用上方按钮插入数学公式，如 $f'(x)$ 或 $g(x)=\frac{f(x)}{e^x}$）…"
+          onChange={(event) => {
+            setText(event.target.value)
+            try {
+              sessionStorage.setItem(`mj:${id}`, event.target.value)
+            } catch {
+              /* Notes remain usable without storage. */
+            }
+          }}
+        />
+        {showPreview && (
+          <div className="mj-note-preview">
+            <div className="mj-note-preview-label">公式排版实时预览 (Formula Preview)</div>
+            <div className="mj-note-preview-body">
+              {text.trim() ? renderMathNote(text) : <span style={{ color: '#8c9e94' }}>暂无内容，请在上方输入或插入数学公式…</span>}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="mj-note-footer">
+        <div>
+          {submittedTime ? (
+            isDirty ? (
+              <span className="mj-note-status is-draft">✎ 有未提交的草稿修改（上次提交：{submittedTime}）</span>
+            ) : (
+              <span className="mj-note-status is-submitted">✓ 已提交回答（{submittedTime}）</span>
+            )
+          ) : (
+            <span className="mj-note-status is-unsubmitted">笔记与提交记录保存在当前标签页</span>
+          )}
+        </div>
+        <button
+          type="button"
+          className="mj-note-submit-btn"
+          disabled={!text.trim() || (!isDirty && submittedTime !== null)}
+          onClick={handleSubmit}
+        >
+          {submittedTime === null ? '提交回答 (Submit)' : isDirty ? '更新提交 (Update)' : '已提交 ✓'}
+        </button>
+      </div>
+    </div>
+  )
 }
 function Graph({ kind, a, c = 2, h = null, tangent = false, disconnected = false }) {
   const clipId = useId()
@@ -154,7 +404,7 @@ function SelfDerivative({onReachedFinalStep, isTeacher = false, expandAll = fals
     {activeStep>=1 && <section className="mj-panel"><h2><MathText>Is that the only one?</MathText></h2><Note id="self-another"><MathText>Can you find a different nonzero example? Check its derivative.</MathText></Note>{activeStep===1 && <button className="mj-button" onClick={()=>setStep(2)}>Consider a whole family</button>}</section>}
     {activeStep>=2 && <section className="mj-panel"><h2><MathText>Let C be a real number. What about f(x) = Ceˣ?</MathText></h2><p><MathText>Check that its derivative equals the function. Could every example have this form?</MathText></p><Graph kind="exp" c={c} a={a} tangent /><label className="mj-slider"><MathFormula tex="C" /> = {c.toFixed(1)}<input type="range" min="-2" max="2" step=".1" value={c} onChange={e=>setC(Number(e.target.value))} /></label><label className="mj-slider"><MathFormula tex="a" /> = {a.toFixed(1)}<input type="range" min="-1" max="1" step=".1" value={a} onChange={e=>setA(Number(e.target.value))} /></label><p className="mj-legend"><MathText>Teal: function · Orange: tangent. The graph illustrates examples; it does not prove they are the only ones.</MathText></p>{activeStep===2 && <button className="mj-button" onClick={()=>setStep(3)}>Check a constant function</button>}</section>}
     {activeStep>=3 && <section className="mj-panel"><h2><MathText>Is the zero function an example?</MathText></h2><Note id="zero"><MathText>Does f(x) = 0 satisfy f′ = f? Is it included in Ceˣ?</MathText></Note><Reveal forceOpen={expandAll}><p><MathText>Its derivative is 0, which is the function itself. It belongs to the family with C = 0.</MathText></p></Reveal>{activeStep===3 && <button className="mj-button" onClick={()=>{setStep(4);onReachedFinalStep()}}>Could there be something else?</button>}</section>}
-    {activeStep>=4 && <section className="mj-panel"><h2><MathText>Do you believe these are the only examples?</MathText></h2><Note id="only"><MathText>What would convince you there is no different kind of example?</MathText></Note><p><MathText>Examples establish that the family works. They do not rule out another family.</MathText></p></section>}
+    {activeStep>=4 && <section className="mj-panel"><h2><MathText>Do you believe these are the only examples?</MathText></h2><Note id="only"><MathText>What would convince you there is no different kind of example?</MathText></Note><p><MathText>Examples show that this family works. They do not prove that these are the only solutions.</MathText></p></section>}
   </>
 }
 function ProofActivity({onReachedFinalStep, isTeacher = false, expandAll = false}) {
@@ -176,7 +426,7 @@ function ProofActivity({onReachedFinalStep, isTeacher = false, expandAll = false
       <span className="mj-kicker">QUESTION 1 / COMPARE THE FUNCTIONS</span>
       <h2>What would show that <MathFormula tex="f" /> is a constant multiple of <MathFormula tex="e^x" />?</h2>
       <p>Define <MathFormula tex={String.raw`g(x)=\frac{f(x)}{e^x}`} />. The denominator is never zero. What would <MathFormula tex="g" /> look like if <MathFormula tex="f(x)=Ce^x" />?</p>
-      <Note id="proof-compare">Describe the new function before calculating its derivative.</Note>
+      <Note id="proof-compare">Describe the new function <MathFormula tex="g" /> before calculating its derivative.</Note>
       <Reveal forceOpen={expandAll}><p>If <MathFormula tex="f(x)=Ce^x" />, then <MathFormula tex="g(x)=C" />: <MathFormula tex="g" /> would be constant. Can <MathFormula tex="f'(x)=f(x)" /> lead us there?</p></Reveal>
       {activeStep===0 && (
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>

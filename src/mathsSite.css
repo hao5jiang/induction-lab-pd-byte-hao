@@ -50,9 +50,34 @@
 .mj-formula .katex { font-size:1.05em; }
 .mj-equation-art .katex { font-size:1em; }
 @media(max-width:480px) { .mj-formula { font-size:18px; padding:12px; } }
-.mj-note { display:block; font-size:16px; line-height:1.7; margin:20px 0; }
-.mj-note textarea { width:100%; resize:vertical; font:16px/1.6 "Segoe UI",sans-serif; padding:12px; margin-top:10px; color:#182d32; background:#fff; border:1px solid #a6b9ac; border-radius:4px; }
-.mj-note small { display:block; color:#65796d; font-size:11px; margin-top:5px; }
+.mj-note { display:block; font-size:16px; line-height:1.7; margin:22px 0; }
+.mj-note-prompt { font-weight:500; margin-bottom:8px; color:#182d32; }
+.mj-note-box { border:1px solid #b2c5b7; border-radius:6px; background:#fff; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+.mj-note-toolbar { background:#f3f6f3; border-bottom:1px solid #dbe4dc; padding:7px 10px; display:flex; flex-direction:column; gap:6px; }
+.mj-note-toolbar-header { display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#58726b; }
+.mj-note-toolbar-title { font-weight:600; display:inline-flex; align-items:center; gap:4px; color:#145952; }
+.mj-note-preview-toggle { background:#fff; border:1px solid #91a79e; border-radius:3px; font-size:11px; padding:3px 8px; color:#145952; cursor:pointer; transition:all 0.15s; }
+.mj-note-preview-toggle:hover { background:#e3ede5; }
+.mj-note-preview-toggle.active { background:#116a64; color:#fff; border-color:#116a64; }
+.mj-note-groups { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.mj-note-group { display:inline-flex; align-items:center; gap:4px; background:#e8eee8; padding:3px 6px; border-radius:4px; flex-wrap:wrap; }
+.mj-note-group-label { font-size:11px; color:#49635b; margin-right:2px; font-weight:600; }
+.mj-math-btn { display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:26px; padding:0 6px; background:#ffffff; border:1px solid #b8cbbe; border-radius:3px; color:#164f49; font-size:12px; cursor:pointer; line-height:1; transition:all 0.15s ease; user-select:none; }
+.mj-math-btn:hover { background:#e0ece3; border-color:#116a64; color:#0d4b46; transform:translateY(-1px); }
+.mj-math-btn:active { transform:translateY(0); }
+.mj-math-btn .katex { font-size:0.95em; }
+.mj-note textarea { width:100%; resize:vertical; font:15px/1.6 "Segoe UI",sans-serif; padding:12px; border:none; outline:none; color:#182d32; background:#fff; box-sizing:border-box; display:block; }
+.mj-note-preview { padding:12px 14px; background:#fbfdfb; border-top:1px dashed #b8cebe; font-size:15px; color:#182d32; line-height:1.6; }
+.mj-note-preview-label { font-size:11px; font-weight:700; color:#145952; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px; }
+.mj-note-preview-body { min-height:24px; }
+.mj-note-footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.mj-note-status { font-size:12px; display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:4px; }
+.mj-note-status.is-submitted { background:#e4f3e6; color:#13724a; border:1px solid #b6dec0; font-weight:600; }
+.mj-note-status.is-draft { background:#fff5e6; color:#8e580e; border:1px solid #fedba5; font-weight:500; }
+.mj-note-status.is-unsubmitted { color:#65796d; }
+.mj-note-submit-btn { display:inline-flex; align-items:center; justify-content:center; padding:7px 16px; background:#116a64; color:white; border:1px solid #116a64; border-radius:4px; font:600 13px/1.4 "Segoe UI",sans-serif; cursor:pointer; transition:background 0.15s; }
+.mj-note-submit-btn:hover:not(:disabled) { background:#174f49; border-color:#174f49; }
+.mj-note-submit-btn:disabled { opacity:0.45; cursor:not-allowed; }
 .mj-button { display:inline-flex; align-items:center; justify-content:center; padding:12px 18px; background:#116a64; color:white; border:1px solid #116a64; border-radius:4px; font:600 14px/1.5 "Segoe UI",sans-serif; cursor:pointer; min-height:46px; }
 .mj-button.secondary { background:transparent;color:#116a64 }.mj-button:disabled{opacity:.4;cursor:default}.mj-button:hover:not(:disabled){background:#174f49;color:white}
 .mj-reveal { margin:20px 0 0; border-top:1px solid #d5dcd2; padding-top:16px; }.mj-reveal summary{cursor:pointer;font-weight:650;color:#116a64;padding:8px 0}.mj-feedback{padding:14px 18px;background:#e8efe2;border-left:3px solid #68825a;margin-top:20px}
