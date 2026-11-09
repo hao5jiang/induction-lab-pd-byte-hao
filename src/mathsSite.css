@@ -62,7 +62,7 @@
 .mj-mode-tab.aux { font-weight:500; font-size:11px; background:#edf3ee; color:#49655d; }
 .mj-mode-tab.aux.active { background:#37574f; color:#fff; border-color:#37574f; }
 .mj-note-latex-hint { font-size:11px; color:#607a71; font-style:italic; padding:2px 2px; }
-.mj-note-preview-toggle { background:#fff; border:1px solid #91a79e; border-radius:3px; font-size:11px; padding:3px 8px; color:#145952; cursor:pointer; transition:all 0.15s; }
+.mj-note-preview-toggle { background:#fff; border:1px solid #91a79e; border-radius:4px; font-size:13px; font-weight:600; padding:4px 12px; color:#145952; cursor:pointer; transition:all 0.15s; }
 .mj-note-preview-toggle:hover { background:#e3ede5; }
 .mj-note-preview-toggle.active { background:#116a64; color:#fff; border-color:#116a64; }
 .mj-note-groups { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
@@ -73,9 +73,11 @@
 .mj-math-btn:active { transform:translateY(0); }
 .mj-math-btn .katex { font-size:0.95em; }
 .mj-note textarea { width:100%; resize:vertical; font:15px/1.6 "Segoe UI",sans-serif; padding:12px; border:none; outline:none; color:#182d32; background:#fff; box-sizing:border-box; display:block; }
-.mj-note-preview { padding:12px 14px; background:#fbfdfb; border-top:1px dashed #b8cebe; font-size:15px; color:#182d32; line-height:1.6; }
-.mj-note-preview-label { font-size:11px; font-weight:700; color:#145952; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px; }
-.mj-note-preview-body { min-height:24px; }
+.mj-note-preview { padding:14px 16px; background:#fbfdfb; border-top:1px dashed #b8cebe; font-size:17px; color:#182d32; line-height:1.7; }
+.mj-note-preview-label { font-size:14px; font-weight:750; color:#116a64; margin-bottom:8px; display:flex; align-items:center; gap:6px; letter-spacing:0.3px; }
+.mj-note-preview-body { min-height:28px; font-size:18px; line-height:1.8; color:#182d32; word-break:break-word; }
+.mj-note-preview-body .katex { font-size:1.18em; }
+.mj-note-preview-empty { font-size:14px; color:#789084; font-style:italic; }
 .mj-note-footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:8px; }
 .mj-note-status { font-size:12px; display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:4px; }
 .mj-note-status.is-submitted { background:#e4f3e6; color:#13724a; border:1px solid #b6dec0; font-weight:600; }

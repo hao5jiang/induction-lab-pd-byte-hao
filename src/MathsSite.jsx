@@ -325,9 +325,11 @@ function Note({ id, children }) {
         />
         {showPreview && (
           <div className="mj-note-preview">
-            <div className="mj-note-preview-label">公式排版实时预览 (Formula Preview)</div>
+            <div className="mj-note-preview-label">
+              <span>👁️ 公式排版实时预览 (Formula Preview)</span>
+            </div>
             <div className="mj-note-preview-body">
-              {text.trim() ? renderMathNote(text) : <span style={{ color: '#8c9e94' }}>暂无内容，请在上方输入或插入数学公式…</span>}
+              {text.trim() ? renderMathNote(text) : <span className="mj-note-preview-empty">（暂无输入内容，请在上方输入文字或点击按钮插入数学公式…）</span>}
             </div>
           </div>
         )}
