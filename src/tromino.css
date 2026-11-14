@@ -211,3 +211,42 @@
   font-size: 11px;
   color: #556c67;
 }
+
+.tromino-proof-details {
+  width: 100%;
+}
+
+.tromino-proof-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  font: 24px/1.35 Georgia, serif;
+  font-weight: 700;
+  color: #182d32;
+  user-select: none;
+}
+
+.tromino-proof-summary::-webkit-details-marker {
+  display: none;
+}
+
+.tromino-proof-toggle-hint {
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #116a64;
+  background: #e3ece3;
+  border: 1px solid #c2d4c4;
+  border-radius: 16px;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+.tromino-proof-body {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e1e7e0;
+}

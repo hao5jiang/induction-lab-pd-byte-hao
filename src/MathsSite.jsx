@@ -23,33 +23,18 @@ function Reveal({ title = 'Compare your reasoning', children, onToggle }) {
 
 const WORD_MATHTYPE_GROUPS = [
   {
-    name: '常用微积分与函数',
-    items: [
-      { label: "f′(x)", displayTex: "f'(x)", val: "f′(x)" },
-      { label: "g′(x)", displayTex: "g'(x)", val: "g′(x)" },
-      { label: "f′(a)", displayTex: "f'(a)", val: "f′(a)" },
-      { label: "eˣ", displayTex: "e^x", val: "eˣ" },
-      { label: "Ceˣ", displayTex: "Ce^x", val: "Ceˣ" },
-      { label: "e⁻ˣ", displayTex: "e^{-x}", val: "e⁻ˣ" },
-      { label: "x²", displayTex: "x^2", val: "x²" },
-      { label: "f′ = f", displayTex: "f'=f", val: "f′ = f" },
-      { label: "f(x)/eˣ", displayTex: "\\frac{f(x)}{e^x}", val: "f(x)/eˣ" },
-      { label: "′", displayTex: "'", val: "′" },
-    ],
-  },
-  {
     name: '结构模板 (MathType)',
     items: [
       { label: 'a/b', displayTex: '\\frac{a}{b}', isFraction: true },
-      { label: 'xⁿ', displayTex: 'x^n', val: 'ⁿ' },
-      { label: 'xₙ', displayTex: 'x_n', val: 'ₙ' },
+      { label: 'xⁿ', displayTex: 'x^n', isSup: true },
+      { label: 'xₙ', displayTex: 'x_n', isSub: true },
       { label: '√x', displayTex: '\\sqrt{x}', isSqrt: true },
       { label: 'lim', displayTex: '\\lim', val: 'lim[x→0]' },
       { label: '( )', displayTex: '( )', isParens: true },
     ],
   },
   {
-    name: '上下标',
+    name: '次方与上下标',
     items: [
       { label: '²', val: '²' },
       { label: '³', val: '³' },
@@ -77,6 +62,7 @@ const WORD_MATHTYPE_GROUPS = [
       { label: '≈', displayTex: '\\approx', val: '≈' },
       { label: 'Δx', displayTex: '\\Delta x', val: 'Δx' },
       { label: 'π', displayTex: '\\pi', val: 'π' },
+      { label: '′', displayTex: "'", val: '′' },
     ],
   },
 ]
@@ -91,7 +77,6 @@ const LATEX_AUX_GROUPS = [
       { label: 'x_{n}', displayTex: 'x_n', tex: '_{n}', isSub: true },
       { label: '\\sqrt{x}', displayTex: '\\sqrt{x}', tex: '\\sqrt{x}', isSqrt: true },
       { label: '\\lim', displayTex: '\\lim', tex: '\\lim_{x \\to 0}' },
-      { label: '\\frac{df}{dx}', displayTex: '\\frac{df}{dx}', tex: '\\frac{df}{dx}' },
       { label: '\\infty', displayTex: '\\infty', tex: '\\infty' },
       { label: '\\neq', displayTex: '\\neq', tex: '\\neq' },
       { label: '\\to', displayTex: '\\to', tex: '\\to' },
@@ -171,11 +156,13 @@ function Note({ id, children }) {
         insertion = code
         cursorOffset = insideMath ? code.length - 2 : code.length - 3
       } else if (item.isSup) {
-        const code = selected ? `${selected}^{n}` : `^{n}`
+        const hasCharBefore = /[A-Za-z0-9\)]$/.test(text.slice(0, start))
+        const code = selected ? `${selected}^{n}` : (insideMath && hasCharBefore ? `^{n}` : `x^{n}`)
         insertion = insideMath ? code : `$${code}$`
         cursorOffset = insertion.length - (insideMath ? 2 : 3)
       } else if (item.isSub) {
-        const code = selected ? `${selected}_{n}` : `_{n}`
+        const hasCharBefore = /[A-Za-z0-9\)]$/.test(text.slice(0, start))
+        const code = selected ? `${selected}_{n}` : (insideMath && hasCharBefore ? `_{n}` : `x_{n}`)
         insertion = insideMath ? code : `$${code}$`
         cursorOffset = insertion.length - (insideMath ? 2 : 3)
       } else if (item.isSqrt) {
@@ -193,6 +180,14 @@ function Note({ id, children }) {
         const num = selected || 'a'
         insertion = `(${num})/(b)`
         cursorOffset = insertion.length - 2
+      } else if (item.isSup) {
+        const hasCharBefore = /[A-Za-z0-9\)]$/.test(text.slice(0, start))
+        insertion = selected ? `${selected}ⁿ` : (hasCharBefore ? 'ⁿ' : 'xⁿ')
+        cursorOffset = insertion.length
+      } else if (item.isSub) {
+        const hasCharBefore = /[A-Za-z0-9\)]$/.test(text.slice(0, start))
+        insertion = selected ? `${selected}ₙ` : (hasCharBefore ? 'ₙ' : 'xₙ')
+        cursorOffset = insertion.length
       } else if (item.isSqrt) {
         const val = selected || 'x'
         insertion = `√(${val})`
@@ -200,6 +195,9 @@ function Note({ id, children }) {
       } else if (item.isParens) {
         insertion = selected ? `(${selected})` : `( )`
         cursorOffset = selected ? insertion.length : 2
+      } else if (selected && ['²', '³', 'ⁿ', 'ˣ', '⁻¹', '₀', '₁', '₂', 'ₙ'].includes(item.val)) {
+        insertion = `${selected}${item.val}`
+        cursorOffset = insertion.length
       } else {
         insertion = item.val || item.label
         cursorOffset = insertion.length
@@ -313,7 +311,7 @@ function Note({ id, children }) {
           ref={textareaRef}
           rows={3}
           value={text}
-          placeholder="像在 Word 中一样写下你的推导或思考（点击上方 MathType 按钮直接插入 f′(x)、eˣ、(a)/(b) 等数学符号，右上角可开启实时预览）…"
+          placeholder="像在 Word 中一样写下你的推导或思考（点击上方按钮直接插入分数、次方、根号等数学符号，右上角可开启实时预览）…"
           onChange={(event) => {
             setText(event.target.value)
             try {
@@ -640,7 +638,7 @@ export default function MathsSite() {
             <span style={{ background: '#7a5195' }} />
           </div>
           <h2><MathText>Deficient Board · 残缺棋盘</MathText></h2>
-          <p>Tiling a <MathFormula tex={String.raw`2^n \times 2^n`} /> board missing one square with L-trominoes. Experience constructive induction.</p>
+          <p>Tiling a <MathFormula tex={String.raw`2^n \times 2^n`} /> board missing one square with L-trominoes.</p>
           <strong>Explore tromino tiling <span>↗</span></strong>
         </a>
       </div>

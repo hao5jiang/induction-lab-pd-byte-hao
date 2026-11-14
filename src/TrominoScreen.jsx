@@ -164,21 +164,12 @@ export function TrominoActivity() {
   return (
     <>
       <header className="mj-lesson-title">
-        <span>03 / 棋盘覆盖与分治归纳</span>
+        <span>03 / 残缺棋盘与骨牌覆盖</span>
         <h1><MathText>残缺棋盘与 L 型骨牌覆盖</MathText></h1>
         <p>对于边长为 <MathFormula tex="2^n" /> 的正方形棋盘，缺失一个格子后，能否用由 3 个方格组成的 L 型骨牌完全铺满？</p>
       </header>
 
       <TrominoPieceDemo />
-
-      <aside className="mj-principle">
-        <strong>构造性数学归纳法（分治归纳）</strong>
-        <p>
-          在数学归纳法中，不仅可以证明“存在性”，还能通过归纳递推步骤直接给出<strong>构造方案</strong>。
-          通过中心放置一块巧妙的 L 型骨牌，我们可以把一个规模为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的大问题，
-          瞬间转化为 4 个互不干扰的 <MathFormula tex={String.raw`2^n \times 2^n`} /> 子问题！
-        </p>
-      </aside>
 
       <div className="mj-two-col">
         {/* 左栏：交互棋盘与动画操作 */}
@@ -294,69 +285,64 @@ export function TrominoActivity() {
         {/* 右栏：数学归纳法推导与解析 */}
         <div>
           <section className="mj-panel">
-            <h2>数学归纳法证明</h2>
-            
-            <div className="tromino-formula-box">
-              <strong style={{ display: 'block', marginBottom: '6px', color: '#116a64' }}>
-                待证命题：
-              </strong>
-              <p style={{ margin: 0, fontSize: '15px' }}>
-                任何大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的棋盘，随便挖掉哪一个格子，剩下的部分都能用 L 型骨牌正好铺满。
-              </p>
-            </div>
+            <details className="tromino-proof-details">
+              <summary className="tromino-proof-summary">
+                <span>数学归纳法证明</span>
+                <span className="tromino-proof-toggle-hint">点击展开 / 收起</span>
+              </summary>
+              <div className="tromino-proof-body">
+                <div className="tromino-formula-box">
+                  <strong style={{ display: 'block', marginBottom: '6px', color: '#116a64' }}>
+                    待证命题：
+                  </strong>
+                  <p style={{ margin: 0, fontSize: '15px' }}>
+                    任何大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的棋盘，随便挖掉哪一个格子，剩下的部分都能用 L 型骨牌正好铺满。
+                  </p>
+                </div>
 
-            <div style={{ marginTop: '20px' }}>
-              <span className="mj-kicker">BASE CASE</span>
-              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>先看 <MathFormula tex={String.raw`2\times2`} /> 棋盘</h3>
-              <p>
-                棋盘一共有 <MathFormula tex={String.raw`2 \times 2 = 4`} /> 个格子。随便挖掉哪一个，剩下的 3 个格子本身就是一块 L 型骨牌，显然成立。
-              </p>
-            </div>
+                <div style={{ marginTop: '20px' }}>
+                  <span className="mj-kicker">BASE CASE</span>
+                  <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>先看 <MathFormula tex={String.raw`2\times2`} /> 棋盘</h3>
+                  <p>
+                    棋盘一共有 <MathFormula tex={String.raw`2 \times 2 = 4`} /> 个格子。随便挖掉哪一个，剩下的 3 个格子本身就是一块 L 型骨牌，显然成立。
+                  </p>
+                </div>
 
-            <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e1e7e0' }}>
-              <span className="mj-kicker">STEP CASE</span>
-              <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>设 <MathFormula tex="n" /> 是正整数</h3>
-              <p>
-                假设：任意大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的棋盘，随便拿掉一个格子都能用 L 型骨牌铺满。
-              </p>
-              <p>
-                用较小棋盘构造更大棋盘：考虑大小为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的大棋盘，其中有一个缺失格。
-              </p>
-              <ol style={{ paddingLeft: '20px', lineHeight: 1.8 }}>
-                <li>
-                  把大棋盘切成 <strong>4 个大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的子棋盘</strong>。
-                </li>
-                <li>
-                  原来的缺失格必然落在其中<strong>某一个</strong>子棋盘里。
-                </li>
-                <li>
-                  <strong>关键一步：</strong>在中心交界处，给另外 3 个完整的子棋盘各占一个角格，<strong>放上 1 块 L 型骨牌</strong>！
-                </li>
-                <li>
-                  这样一来，这 3 个原本完整的子棋盘，中心各少了一个角，<strong>全变成了“缺 1 个格子的 <MathFormula tex={String.raw`2^n \times 2^n`} /> 子棋盘”</strong>。
-                </li>
-                <li>
-                  根据归纳假设，这 4 个子棋盘全部都能用 L 型骨牌正好铺满！
-                </li>
-              </ol>
-              <div className="mj-formula" style={{ margin: '14px 0' }}>
-                <MathFormula display tex={String.raw`\text{总骨牌数} = 1 + 4 \times \frac{2^{2n}-1}{3} = \frac{2^{2(n+1)}-1}{3}`} />
+                <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e1e7e0' }}>
+                  <span className="mj-kicker">STEP CASE</span>
+                  <h3 style={{ margin: '6px 0 10px', fontSize: '18px' }}>设 <MathFormula tex="n" /> 是正整数</h3>
+                  <p>
+                    假设：任意大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的棋盘，随便拿掉一个格子都能用 L 型骨牌铺满。
+                  </p>
+                  <p>
+                    用较小棋盘构造更大棋盘：考虑大小为 <MathFormula tex={String.raw`2^{n+1} \times 2^{n+1}`} /> 的大棋盘，其中有一个缺失格。
+                  </p>
+                  <ol style={{ paddingLeft: '20px', lineHeight: 1.8 }}>
+                    <li>
+                      把大棋盘切成 <strong>4 个大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的子棋盘</strong>。
+                    </li>
+                    <li>
+                      原来的缺失格必然落在其中<strong>某一个</strong>子棋盘里。
+                    </li>
+                    <li>
+                      <strong>关键一步：</strong>在中心交界处，给另外 3 个完整的子棋盘各占一个角格，<strong>放上 1 块 L 型骨牌</strong>！
+                    </li>
+                    <li>
+                      这样一来，这 3 个原本完整的子棋盘，中心各少了一个角，<strong>全变成了“缺 1 个格子的 <MathFormula tex={String.raw`2^n \times 2^n`} /> 子棋盘”</strong>。
+                    </li>
+                    <li>
+                      根据归纳假设，这 4 个子棋盘全部都能用 L 型骨牌正好铺满！
+                    </li>
+                  </ol>
+                  <div className="mj-formula" style={{ margin: '14px 0' }}>
+                    <MathFormula display tex={String.raw`\text{总骨牌数} = 1 + 4 \times \frac{2^{2n}-1}{3} = \frac{2^{2(n+1)}-1}{3}`} />
+                  </div>
+                  <p>
+                    所以，只要较小棋盘能铺满，更大棋盘也一定能铺满。由数学归纳法，这个结论对所有正整数 <MathFormula tex="n" /> 都成立。
+                  </p>
+                </div>
               </div>
-              <p>
-                所以，只要较小棋盘能铺满，更大棋盘也一定能铺满。由数学归纳法，这个结论对所有正整数 <MathFormula tex="n" /> 都成立。
-              </p>
-            </div>
-          </section>
-
-          <section className="mj-panel">
-            <h2>深入思考：分治与数学归纳法</h2>
-            <p>
-              计算机科学中的<strong>“分治算法”（Divide & Conquer）</strong>本质上就是数学归纳法的构造性体现：
-            </p>
-            <ul style={{ paddingLeft: '20px', lineHeight: 1.8 }}>
-              <li><strong>汉诺塔问题</strong>：将 <MathFormula tex="n+1" /> 阶问题拆分为两次 <MathFormula tex="n" /> 阶小塔的移动与一次底盘的移动。</li>
-              <li><strong>棋盘覆盖问题</strong>：将 <MathFormula tex="2^{n+1}" /> 大棋盘通过中心放置 1 块骨牌，转化为 4 个 <MathFormula tex="2^n" /> 的子棋盘独立求解。</li>
-            </ul>
+            </details>
           </section>
         </div>
       </div>
