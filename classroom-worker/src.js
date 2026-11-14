@@ -36,15 +36,23 @@ export default {
 }
 
 export class Classroom {
-  constructor(state) { this.state = state }
+  constructor(state) {
+    this.state = state
+    this.queue = Promise.resolve()
+  }
   async alarm() { await this.state.storage.deleteAll() }
   async fetch(request) {
     const route = new URL(request.url).pathname.slice(1)
-    const data = await this.state.storage.get('class')
     let body = {}
     if (request.method === 'POST') {
       try { body = await request.json() } catch { return json({ error: 'Invalid request.' }, 400) }
     }
+    const task = this.queue.then(() => this.handle(route, request.method, request.headers.get('Authorization') || '', body))
+    this.queue = task.catch(() => {})
+    return task
+  }
+  async handle(route, method, authHeader, body) {
+    const data = await this.state.storage.get('class')
     if (route === 'internal-create') {
       if (data && data.active && Date.now() - data.created <= 7 * 86400000) return json({ error: 'Code already used.' }, 409)
       await this.state.storage.put('class', { code: body.code, teacher: body.teacher, created: Date.now(), active: true, shortest: false, steps: false, participants: {} })
@@ -52,32 +60,33 @@ export class Classroom {
       return json({ ok: true }, 201)
     }
     if (!data || !data.active || Date.now() - data.created > 7 * 86400000) return json({ error: 'Class not found or closed.' }, 404)
-    const token = (request.headers.get('Authorization') || '').replace(/^Bearer /, '')
-    if (route === 'join' && request.method === 'POST') {
+    const token = authHeader.replace(/^Bearer /, '')
+    if (route === 'join' && method === 'POST') {
       const name = String(body.name || '').trim().slice(0, 40)
       if (!name) return json({ error: 'Enter a nickname.' }, 400)
       if (Object.keys(data.participants).length >= 120) return json({ error: 'Class is full.' }, 429)
       const participant = randomToken()
-      data.participants[participant] = { name, stage: 'play', disc_count: 3, move_count: 0, hint_count: 0, completed: false, notice_answer: null, prove_answer: null }
+      const progress = { name, stage: 'play', disc_count: 3, move_count: 0, hint_count: 0, completed: false, notice_answer: null, prove_answer: null }
+      data.participants[participant] = progress
       await this.state.storage.put('class', data)
-      return json({ participant }, 201)
+      return json({ participant, progress, shortest: data.shortest, steps: data.steps }, 201)
     }
     const isTeacher = token && token === data.teacher
     const pupil = token && data.participants[token]
-    if (route === 'state' && request.method === 'GET' && pupil) return json({ progress: pupil, shortest: data.shortest, steps: data.steps })
-    if (route === 'dashboard' && request.method === 'GET' && isTeacher) return json({ code: data.code, shortest: data.shortest, steps: data.steps, participants: Object.values(data.participants) })
-    if (route === 'release' && request.method === 'POST' && isTeacher) {
+    if (route === 'state' && method === 'GET' && pupil) return json({ progress: pupil, shortest: data.shortest, steps: data.steps })
+    if (route === 'dashboard' && method === 'GET' && isTeacher) return json({ code: data.code, shortest: data.shortest, steps: data.steps, participants: Object.values(data.participants) })
+    if (route === 'release' && method === 'POST' && isTeacher) {
       if (body.gate === 'shortest') data.shortest = true
       else if (body.gate === 'steps' && data.shortest) data.steps = true
       else return json({ error: 'Invalid approval.' }, 400)
       await this.state.storage.put('class', data)
       return json({ ok: true })
     }
-    if (route === 'end' && request.method === 'POST' && isTeacher) {
+    if (route === 'end' && method === 'POST' && isTeacher) {
       await this.state.storage.deleteAll()
       return json({ ok: true })
     }
-    if (route === 'progress' && request.method === 'POST' && pupil) {
+    if (route === 'progress' && method === 'POST' && pupil) {
       const stages = ['play', 'notice', 'prove', 'steps', 'debrief', 'can']
       const stage = String(body.stage || '')
       if (!stages.includes(stage)) return json({ error: 'Invalid stage.' }, 400)

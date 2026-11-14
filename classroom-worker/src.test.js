@@ -37,3 +37,49 @@ test('teacher and student capabilities stay separate and gates control progressi
   assert.equal((await request(env, base + '/end', {}, klass.teacher))[0], 200)
   assert.equal((await request(env, base + '/state', null, student.participant))[0], 404)
 })
+
+test('concurrent delayed POST join and progress requests do not overwrite each other', async () => {
+  const env = environment()
+  const [created, klass] = await request(env, '/create', {})
+  assert.equal(created, 201)
+  const base = '/class/' + klass.code
+  const [j1, s1] = await request(env, base + '/join', { name: 'First' })
+  assert.equal(j1, 201)
+  assert.equal(s1.progress.name, 'First')
+  assert.equal(s1.shortest, false)
+  assert.equal(s1.steps, false)
+
+  const delayedPost = (path, body, token, delayMs) => {
+    const encoded = new TextEncoder().encode(JSON.stringify(body))
+    const stream = new ReadableStream({
+      async start(controller) {
+        await new Promise(r => setTimeout(r, delayMs))
+        controller.enqueue(encoded)
+        controller.close()
+      },
+    })
+    const req = new Request('https://worker.example' + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+      body: stream,
+      duplex: 'half',
+    })
+    return worker.fetch(req, env).then(async res => [res.status, await res.json()])
+  }
+
+  const [[pStatus], [j2Status, s2]] = await Promise.all([
+    delayedPost(base + '/progress', { stage: 'play', disc_count: 3, move_count: 5, hint_count: 1, completed: false, notice_answer: null, prove_answer: null }, s1.participant, 25),
+    delayedPost(base + '/join', { name: 'Second' }, null, 5),
+  ])
+  assert.equal(pStatus, 200)
+  assert.equal(j2Status, 201)
+
+  const [stateStatus, stateRes] = await request(env, base + '/state', null, s2.participant)
+  assert.equal(stateStatus, 200)
+  assert.equal(stateRes.progress.name, 'Second')
+
+  const [, dashboard] = await request(env, base + '/dashboard', null, klass.teacher)
+  assert.equal(dashboard.participants.length, 2)
+  const first = dashboard.participants.find(p => p.name === 'First')
+  assert.equal(first.move_count, 5)
+})

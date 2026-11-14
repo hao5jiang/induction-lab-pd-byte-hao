@@ -574,19 +574,7 @@ export default function MathsSite() {
   if (!topic && (params.has('join') || params.has('teacher') || params.has('classroom'))) return <Classroom />
   if(topic==='induction' || (!topic && legacy)) {
     if (isStudent) {
-      return (
-        <div className="mj-site">
-          <div className="mj-topbar">
-            <a className="mj-brand" href={siteUrl('', 'student')}>Mr Jiang<span>Maths (Student)</span></a>
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-              <a href={siteUrl('', 'student')}>← 返回首页 (Home)</a>
-            </div>
-          </div>
-          <main className="mj-lesson">
-            <StudentJoinView defaultCode={params.get('code') || ''} />
-          </main>
-        </div>
-      )
+      return <StudentJoinView defaultCode={params.get('code') || ''} backHref={siteUrl('', 'student')} />
     }
     return <><a className="mj-return" href={siteUrl('', role)}>← Mr Jiang Maths</a><App onOpenClassroom={() => { location.href = location.pathname + '?classroom=1' }} /></>
   }
