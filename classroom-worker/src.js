@@ -46,7 +46,7 @@ export class Classroom {
       try { body = await request.json() } catch { return json({ error: 'Invalid request.' }, 400) }
     }
     if (route === 'internal-create') {
-      if (data) return json({ error: 'Code already used.' }, 409)
+      if (data && data.active && Date.now() - data.created <= 7 * 86400000) return json({ error: 'Code already used.' }, 409)
       await this.state.storage.put('class', { code: body.code, teacher: body.teacher, created: Date.now(), active: true, shortest: false, steps: false, participants: {} })
       await this.state.storage.setAlarm(Date.now() + 7 * 86400000)
       return json({ ok: true }, 201)

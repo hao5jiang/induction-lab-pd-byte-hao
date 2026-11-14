@@ -11,7 +11,11 @@ async function call(path, { token, body } = {}) {
   if (!API) throw new Error('The classroom service is not configured yet.')
   const response = await fetch(`${API}${path}`, { method: body ? 'POST' : 'GET', headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) })
   const result = await response.json()
-  if (!response.ok) throw new Error(result.error || 'Connection failed.')
+  if (!response.ok) {
+    const error = new Error(result.error || 'Connection failed.')
+    error.status = response.status
+    throw error
+  }
   return result
 }
 
@@ -29,8 +33,12 @@ export function StudentClass({ session, onLeave }) {
       const result = await call(`${path}/state`, { token: session.participant })
       if (!mounted.current) return
       setState(result); setInitial(value => value || result.progress); setStatus('ready')
-    } catch { if (mounted.current) setStatus('error') }
-  }, [path, session.participant])
+    } catch (e) {
+      if (!mounted.current) return
+      if (e.status === 404 || e.status === 403 || e.message === 'Class not found or closed.') { onLeave(); return }
+      setStatus('error')
+    }
+  }, [path, session.participant, onLeave])
   const flush = useCallback(async () => {
     if (running.current || !pending.current) return
     running.current = true
@@ -130,7 +138,16 @@ export default function Classroom() {
   const refresh = useCallback(async () => {
     if (!teacher) return
     try { setDashboard(await call(`/class/${teacher.code}/dashboard`, { token: teacher.teacher })); setError('') }
-    catch (e) { setError(e.message) }
+    catch (e) {
+      if (e.status === 404 || e.status === 403 || e.message === 'Class not found or closed.') {
+        remove(teacherKey)
+        setTeacher(null)
+        setDashboard(null)
+        setError('')
+        return
+      }
+      setError(e.message)
+    }
   }, [teacher])
   useEffect(() => { if (mode !== 'teacher' || !teacher) return; void refresh(); const timer = setInterval(refresh, 5000); return () => clearInterval(timer) }, [mode, teacher, refresh])
   async function create() {
@@ -144,8 +161,21 @@ export default function Classroom() {
   }
   async function action(actionName, body) {
     if (actionName === 'end' && !window.confirm('End this class and delete its student progress?')) return
-    try { await call(`/class/${teacher.code}/${actionName}`, { token: teacher.teacher, body }); if (actionName === 'end') { remove(teacherKey); setTeacher(null); setDashboard(null) } else await refresh(); setError('') }
-    catch (e) { setError(e.message) }
+    try {
+      await call(`/class/${teacher.code}/${actionName}`, { token: teacher.teacher, body })
+      if (actionName === 'end') { remove(teacherKey); setTeacher(null); setDashboard(null) }
+      else await refresh()
+      setError('')
+    } catch (e) {
+      if (actionName === 'end' || e.status === 404 || e.status === 403 || e.message === 'Class not found or closed.') {
+        remove(teacherKey)
+        setTeacher(null)
+        setDashboard(null)
+        setError('')
+        return
+      }
+      setError(e.message)
+    }
   }
   if (student && mode === 'join') return <StudentClass session={student} onLeave={() => { remove(studentKey); setStudent(null) }} />
   const link = teacher ? `${location.origin}${location.pathname}?join=${teacher.code}` : ''
