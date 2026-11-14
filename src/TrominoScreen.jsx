@@ -313,7 +313,7 @@ export function TrominoActivity() {
                     待证命题：
                   </strong>
                   <p style={{ margin: 0, fontSize: '15px' }}>
-                    任何大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的棋盘，随便挖掉哪一个格子，剩下的部分都能用 L 型骨牌正好铺满。
+                    每个大小为 <MathFormula tex={String.raw`2^n \times 2^n`} /> 的棋盘，随便挖掉哪一个格子，剩下的部分都能用 L 型骨牌正好铺满。
                   </p>
                 </div>
 
