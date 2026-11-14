@@ -303,10 +303,11 @@ export function TrominoActivity() {
           <section className="mj-panel">
             <details className="tromino-proof-details">
               <summary className="tromino-proof-summary">
-                <span>数学归纳法证明</span>
+                <span>证明</span>
                 <span className="tromino-proof-toggle-hint">点击展开 / 收起</span>
               </summary>
               <div className="tromino-proof-body">
+                <h3 style={{ margin: '0 0 14px', font: '700 20px/1.35 Georgia, serif', color: '#182d32' }}>数学归纳法证明</h3>
                 <div className="tromino-formula-box">
                   <strong style={{ display: 'block', marginBottom: '6px', color: '#116a64' }}>
                     待证命题：
