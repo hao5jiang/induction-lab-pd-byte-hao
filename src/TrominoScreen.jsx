@@ -138,9 +138,25 @@ export function TrominoActivity() {
     return () => clearTimeout(timer)
   }, [isPlaying, stepIndex, solution.steps.length])
 
+  const resetInteractionState = () => {
+    setStepIndex(0)
+    setIsPlaying(false)
+    setManualTiles([])
+    setSelected([])
+    setManualMessage('')
+  }
+
+  const handleSelectSize = (newK, newMissR, newMissC) => {
+    setK(newK)
+    setMissR(newMissR)
+    setMissC(newMissC)
+    resetInteractionState()
+  }
+
   const handleSelectMiss = (r, c) => {
     setMissR(r)
     setMissC(c)
+    resetInteractionState()
   }
 
   const handleManualCell = (r, c) => {
@@ -178,14 +194,14 @@ export function TrominoActivity() {
           <h2>棋盘尺寸：<MathFormula tex={`${size}\\times${size}`} /></h2>
 
           <div className="tromino-controls">
-            <label className="mj-slider" style={{ margin: 0 }}>
+            <div className="mj-slider" style={{ margin: 0 }} role="group" aria-label="选择棋盘规模">
               选择规模 <MathFormula tex="n" />：
               <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
                 <button
                   type="button"
                   className={`mj-button ${k === 1 ? '' : 'secondary'}`}
                   style={{ minHeight: '36px', padding: '6px 12px' }}
-                  onClick={() => { setK(1); setMissR(0); setMissC(0); }}
+                  onClick={() => handleSelectSize(1, 0, 0)}
                 >
                   <MathFormula tex={String.raw`2\times2`} />
                 </button>
@@ -193,7 +209,7 @@ export function TrominoActivity() {
                   type="button"
                   className={`mj-button ${k === 2 ? '' : 'secondary'}`}
                   style={{ minHeight: '36px', padding: '6px 12px' }}
-                  onClick={() => { setK(2); setMissR(1); setMissC(2); }}
+                  onClick={() => handleSelectSize(2, 1, 2)}
                 >
                   <MathFormula tex={String.raw`4\times4`} />
                 </button>
@@ -201,12 +217,12 @@ export function TrominoActivity() {
                   type="button"
                   className={`mj-button ${k === 3 ? '' : 'secondary'}`}
                   style={{ minHeight: '36px', padding: '6px 12px' }}
-                  onClick={() => { setK(3); setMissR(2); setMissC(3); }}
+                  onClick={() => handleSelectSize(3, 2, 3)}
                 >
                   <MathFormula tex={String.raw`8\times8`} />
                 </button>
               </div>
-            </label>
+            </div>
           </div>
 
           <div className="tromino-container">

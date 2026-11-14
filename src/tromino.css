@@ -14,6 +14,16 @@
   justify-content: center;
 }
 
+.mj-button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mj-button .mj-typeset-inline,
+.mj-button .katex {
+  pointer-events: none;
+}
+
 .tromino-board-wrapper {
   position: relative;
   background: #253338;
@@ -21,7 +31,10 @@
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .tromino-board {
@@ -36,6 +49,12 @@
 .tromino-cell {
   width: 44px;
   height: 44px;
+  padding: 0;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,18 +68,20 @@
   text-shadow: 0 1px 2px rgba(0,0,0,0.4);
 }
 
-.tromino-cell:hover:not(.missing):not(.tiled) {
-  transform: scale(1.08);
-  outline: 2px solid #ffd166;
-  z-index: 2;
-}
-
 .tromino-cell.empty {
   background: #324348;
 }
 
-.tromino-cell.empty:hover {
-  background: #3e5359;
+@media (hover: hover) and (pointer: fine) {
+  .tromino-cell:hover:not(.missing):not(.tiled) {
+    transform: scale(1.08);
+    outline: 2px solid #ffd166;
+    z-index: 2;
+  }
+
+  .tromino-cell.empty:hover {
+    background: #3e5359;
+  }
 }
 
 .tromino-cell.missing {
@@ -130,10 +151,22 @@
   background: #f0f7f5;
 }
 
-@media (max-width: 540px) {
+@media (max-width: 1024px) {
   .tromino-cell {
-    width: 32px;
-    height: 32px;
+    width: clamp(32px, 4.5vw, 44px);
+    height: clamp(32px, 4.5vw, 44px);
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 540px) {
+  .tromino-board-wrapper {
+    padding: 8px;
+  }
+
+  .tromino-cell {
+    width: clamp(28px, 9.2vw, 34px);
+    height: clamp(28px, 9.2vw, 34px);
     font-size: 11px;
   }
 }

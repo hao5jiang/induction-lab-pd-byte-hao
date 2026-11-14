@@ -135,5 +135,6 @@
 .mj-slope-gap strong { font-size:25px; font-variant-numeric:tabular-nums; }
 .mj-site .mj-secant { stroke:#7545a1; stroke-width:3; }
 .mj-site .mj-tangent { stroke:#b85b18; stroke-width:3; }
-@media(max-width:720px){.mj-home{padding-top:42px}.mj-topbar,.mj-home,.mj-lesson{padding-left:20px;padding-right:20px}.mj-topbar>span{display:none}.mj-courses,.mj-two-col{grid-template-columns:1fr}.mj-tabs{grid-template-columns:1fr 1fr;margin-bottom:32px}.mj-panel{padding:20px}.mj-home h1{letter-spacing:-1px}.mj-course p{min-height:0}.mj-topbar>a:last-child:not(:first-child){max-width:140px;font-size:12px;text-align:right}.mj-principle{padding:18px}.mj-courses{margin-top:28px}}
+@media(max-width:900px){.mj-two-col{grid-template-columns:1fr}}
+@media(max-width:720px){.mj-home{padding-top:42px}.mj-topbar,.mj-home,.mj-lesson{padding-left:20px;padding-right:20px}.mj-topbar>span{display:none}.mj-courses{grid-template-columns:1fr}.mj-tabs{grid-template-columns:1fr 1fr;margin-bottom:32px}.mj-panel{padding:20px}.mj-home h1{letter-spacing:-1px}.mj-course p{min-height:0}.mj-topbar>a:last-child:not(:first-child){max-width:140px;font-size:12px;text-align:right}.mj-principle{padding:18px}.mj-courses{margin-top:28px}}
 @media(prefers-reduced-motion:reduce){.mj-course{transition:none}}
